@@ -83,7 +83,7 @@ export default function App() {
     switch (slideId) {
       case 'slideIntroLogo': return 0;
       case 'hero': return 0;
-      case 'slideDsRent': return 1;
+      case 'slideDsRent': return 9;
       case 'slideConcept': return 0;
       case 'slide2': return 3;
       case 'slide3': return 3;
@@ -318,90 +318,126 @@ const DS_RENT_SERVICE_ICONS: Record<string, typeof Users> = {
 const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
   const { titleAr, titleEn, logoSrc, logoAlt, services, points, footer } = CONTENT.slideDsRent;
   const [logoFailed, setLogoFailed] = useState(false);
+  const bulletStartStep = 3;
 
   return (
-    <div className="presentation-slide flex flex-col gap-5 lg:gap-8 min-h-0">
-      <div className="border-b-2 border-slate-100 pb-4 lg:pb-6 shrink-0">
+    <div className="presentation-slide flex flex-col gap-4 lg:gap-6 overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="border-b-2 border-slate-100 pb-3 lg:pb-5 shrink-0"
+      >
         <p className="text-[10px] lg:text-xs font-black text-brand-orange uppercase tracking-[0.35em] mb-2">
           {titleEn}
         </p>
-        <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-brand-blue leading-tight italic">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-brand-blue leading-tight italic">
           {titleAr}
         </h2>
-      </div>
+      </motion.div>
 
-      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-stretch">
-        <div className="lg:col-span-4 flex flex-col gap-4 lg:gap-6">
-          <div className="flex-1 min-h-[140px] lg:min-h-0 bg-white rounded-2xl lg:rounded-[2.5rem] border-2 border-slate-100 shadow-xl flex items-center justify-center p-6 lg:p-10">
-            {logoFailed ? (
-              <div className="flex flex-col items-center gap-3 text-center">
-                <div className="w-16 h-16 lg:w-24 lg:h-24 rounded-2xl bg-brand-blue/10 flex items-center justify-center text-brand-blue">
-                  <Building2 size={40} className="lg:w-14 lg:h-14" strokeWidth={1.75} />
-                </div>
-                <p className="text-xl lg:text-3xl font-black text-brand-blue italic">{logoAlt}</p>
-              </div>
-            ) : (
-              <img
-                src={logoSrc}
-                alt={logoAlt}
-                className="max-h-full max-w-full object-contain"
-                onError={() => setLogoFailed(true)}
-              />
-            )}
-          </div>
-
-          <div className="grid grid-cols-3 gap-2 lg:gap-3">
-            {services.map((service, i) => {
-              const Icon = DS_RENT_SERVICE_ICONS[service.icon] ?? Layers;
-              return (
-                <motion.div
-                  key={service.label}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.06 }}
-                  className="flex flex-col items-center gap-1.5 lg:gap-2 p-2 lg:p-3 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm hover:border-brand-orange/40 hover:shadow-md transition-all text-center"
-                >
-                  <div className="w-9 h-9 lg:w-11 lg:h-11 rounded-lg lg:rounded-xl bg-[#dbeafe] flex items-center justify-center text-brand-blue">
-                    <Icon size={18} className="lg:w-5 lg:h-5" strokeWidth={2.25} />
-                  </div>
-                  <span className="text-[9px] lg:text-[10px] font-black text-brand-blue leading-tight">
-                    {service.label}
-                  </span>
-                  <span className="text-[7px] lg:text-[8px] font-bold text-slate-400 uppercase tracking-wider">
-                    {service.labelEn}
-                  </span>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="lg:col-span-8 flex flex-col justify-between gap-4 lg:gap-6 min-h-0">
-          <ul className="space-y-2.5 lg:space-y-4 flex-1 min-h-0">
-            {points.map((point, i) => (
-              <motion.li
-                key={point}
-                initial={{ opacity: 0, x: 24 }}
-                animate={step >= 1 ? { opacity: 1, x: 0 } : { opacity: 0, x: 24 }}
-                transition={{ delay: i * 0.08 }}
-                className="flex items-start gap-3 lg:gap-4 p-3 lg:p-5 bg-white/90 rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm"
-              >
-                <span className="mt-1.5 w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-brand-orange shrink-0" />
-                <span className="text-sm md:text-lg lg:text-2xl font-bold text-slate-700 leading-snug">
-                  {point}
-                </span>
-              </motion.li>
-            ))}
-          </ul>
-
-          <AnimatePresence>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-start">
+        <div className="lg:col-span-4 flex flex-col gap-3 lg:gap-4">
+          <AnimatePresence mode="wait">
             {step >= 1 && (
               <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="shrink-0 p-4 lg:p-6 bg-brand-blue text-white rounded-xl lg:rounded-2xl shadow-xl border border-white/10"
+                key="ds-rent-logo"
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.92 }}
+                transition={{ duration: 0.35 }}
+                className="h-[120px] lg:h-[160px] bg-white rounded-2xl lg:rounded-[2rem] border-2 border-slate-100 shadow-xl flex items-center justify-center p-5 lg:p-8"
               >
-                <p className="text-sm md:text-base lg:text-xl font-bold leading-relaxed italic text-center lg:text-right">
+                {logoFailed ? (
+                  <div className="flex flex-col items-center gap-2 text-center">
+                    <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-2xl bg-brand-blue/10 flex items-center justify-center text-brand-blue">
+                      <Building2 size={32} className="lg:w-10 lg:h-10" strokeWidth={1.75} />
+                    </div>
+                    <p className="text-lg lg:text-2xl font-black text-brand-blue italic">{logoAlt}</p>
+                  </div>
+                ) : (
+                  <img
+                    src={logoSrc}
+                    alt={logoAlt}
+                    className="max-h-full max-w-full object-contain"
+                    onError={() => setLogoFailed(true)}
+                  />
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {step >= 2 && (
+              <motion.div
+                key="ds-rent-services"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="grid grid-cols-3 gap-2 lg:gap-2.5"
+              >
+                {services.map((service, i) => {
+                  const Icon = DS_RENT_SERVICE_ICONS[service.icon] ?? Layers;
+                  return (
+                    <motion.div
+                      key={service.label}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.06, duration: 0.28 }}
+                      className="flex flex-col items-center gap-1 lg:gap-1.5 p-2 lg:p-2.5 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm text-center"
+                    >
+                      <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-lg bg-[#dbeafe] flex items-center justify-center text-brand-blue">
+                        <Icon size={16} className="lg:w-[18px] lg:h-[18px]" strokeWidth={2.25} />
+                      </div>
+                      <span className="text-[8px] lg:text-[9px] font-black text-brand-blue leading-tight">
+                        {service.label}
+                      </span>
+                      <span className="text-[7px] font-bold text-slate-400 uppercase tracking-wider">
+                        {service.labelEn}
+                      </span>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <div className="lg:col-span-8 flex flex-col gap-3 lg:gap-4">
+          <ul className="flex flex-col gap-2 lg:gap-2.5 list-none m-0 p-0">
+            <AnimatePresence initial={false}>
+              {points.map((point, i) => {
+                const showBullet = step >= bulletStartStep + i;
+                if (!showBullet) return null;
+                return (
+                  <motion.li
+                    key={point}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -12 }}
+                    transition={{ duration: 0.32, ease: 'easeOut' }}
+                    className="flex items-start gap-3 p-3 lg:p-4 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm"
+                  >
+                    <span className="mt-1.5 w-2 h-2 rounded-full bg-brand-orange shrink-0" />
+                    <span className="text-sm md:text-base lg:text-lg font-bold text-slate-700 leading-snug">
+                      {point}
+                    </span>
+                  </motion.li>
+                );
+              })}
+            </AnimatePresence>
+          </ul>
+
+          <AnimatePresence mode="wait">
+            {step >= 9 && (
+              <motion.div
+                key="ds-rent-footer"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+                className="p-4 lg:p-5 bg-brand-blue text-white rounded-xl lg:rounded-2xl shadow-xl border border-white/10 relative z-0"
+              >
+                <p className="text-sm md:text-base lg:text-lg font-bold leading-relaxed italic text-center lg:text-right">
                   {footer}
                 </p>
               </motion.div>
