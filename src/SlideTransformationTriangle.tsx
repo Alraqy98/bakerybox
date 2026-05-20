@@ -131,8 +131,9 @@ const TRI_VIEW = { w: 400, h: 300 };
 const TRI_TOP = { x: 200, y: 44 };
 const TRI_BL = { x: 62, y: 262 };
 const TRI_BR = { x: 338, y: 262 };
-const TRI_MID = { x: 200, y: 178 };
+const TRI_MID = { x: 200, y: 176 };
 const TRI_BASE_MID = { x: 200, y: 262 };
+const CENTER_R = 56;
 
 function vertexStyle(x: number, y: number) {
   return {
@@ -140,6 +141,27 @@ function vertexStyle(x: number, y: number) {
     top: `${(y / TRI_VIEW.h) * 100}%`,
     transform: 'translate(-50%, -50%)',
   } as const;
+}
+
+/** Point along vertex→center line where arrow should stop (before center text) */
+function arrowPoints(
+  vx: number,
+  vy: number,
+  vertexR: number,
+  circleR: number,
+  headGap: number
+) {
+  const dx = TRI_MID.x - vx;
+  const dy = TRI_MID.y - vy;
+  const dist = Math.hypot(dx, dy);
+  const ux = dx / dist;
+  const uy = dy / dist;
+  const start = { x: vx + ux * vertexR, y: vy + uy * vertexR };
+  const end = {
+    x: vx + ux * (dist - circleR - headGap),
+    y: vy + uy * (dist - circleR - headGap),
+  };
+  return { start, end };
 }
 
 function TriangleDiagram({ visible }: { visible: boolean }) {
@@ -169,41 +191,30 @@ function TriangleDiagram({ visible }: { visible: boolean }) {
         <line x1={TRI_TOP.x} y1={TRI_TOP.y} x2={TRI_BL.x} y2={TRI_BL.y} stroke={TEAL} strokeWidth="7" strokeLinecap="round" />
         <line x1={TRI_TOP.x} y1={TRI_TOP.y} x2={TRI_BR.x} y2={TRI_BR.y} stroke={ROYAL} strokeWidth="7" strokeLinecap="round" />
         <line x1={TRI_BL.x} y1={TRI_BL.y} x2={TRI_BR.x} y2={TRI_BR.y} stroke={NAVY} strokeWidth="7" strokeLinecap="round" />
-        {/* Gold arrows inward */}
-        <line
-          x1={TRI_TOP.x}
-          y1={TRI_TOP.y + 28}
-          x2={TRI_MID.x}
-          y2={TRI_MID.y - 40}
-          stroke={GOLD}
-          strokeWidth="2.5"
-          markerEnd="url(#tri-gold-arrow)"
-        />
-        <line
-          x1={TRI_BL.x + 22}
-          y1={TRI_BL.y - 18}
-          x2={TRI_MID.x - 28}
-          y2={TRI_MID.y + 24}
-          stroke={GOLD}
-          strokeWidth="2.5"
-          markerEnd="url(#tri-gold-arrow)"
-        />
-        <line
-          x1={TRI_BR.x - 22}
-          y1={TRI_BR.y - 18}
-          x2={TRI_MID.x + 28}
-          y2={TRI_MID.y + 24}
-          stroke={GOLD}
-          strokeWidth="2.5"
-          markerEnd="url(#tri-gold-arrow)"
-        />
+        {/* Gold arrows — stop on the ring, not over the label */}
+        {[
+          arrowPoints(TRI_TOP.x, TRI_TOP.y, 30, CENTER_R, 10),
+          arrowPoints(TRI_BL.x, TRI_BL.y, 30, CENTER_R, 10),
+          arrowPoints(TRI_BR.x, TRI_BR.y, 30, CENTER_R, 10),
+        ].map((pts, i) => (
+          <line
+            key={i}
+            x1={pts.start.x}
+            y1={pts.start.y}
+            x2={pts.end.x}
+            y2={pts.end.y}
+            stroke={GOLD}
+            strokeWidth="2"
+            markerEnd="url(#tri-gold-arrow)"
+          />
+        ))}
         {/* Connector to value box (below triangle) */}
         <line x1={TRI_BASE_MID.x} y1={TRI_BL.y + 2} x2={TRI_BASE_MID.x} y2={TRI_VIEW.h - 4} stroke={GOLD} strokeWidth="2" />
         {/* Vertices */}
         <circle cx={TRI_TOP.x} cy={TRI_TOP.y} r="30" fill={gov.color} filter="url(#tri-vertex-shadow)" />
         <circle cx={TRI_BL.x} cy={TRI_BL.y} r="30" fill={rev.color} filter="url(#tri-vertex-shadow)" />
         <circle cx={TRI_BR.x} cy={TRI_BR.y} r="30" fill={exec.color} filter="url(#tri-vertex-shadow)" />
-        <circle cx={TRI_MID.x} cy={TRI_MID.y} r="46" fill="white" stroke={GOLD} strokeWidth="3.5" />
+        <circle cx={TRI_MID.x} cy={TRI_MID.y} r={CENTER_R} fill="white" stroke={GOLD} strokeWidth="3.5" />
       </svg>
 
       <div className="absolute inset-0 pointer-events-none">
@@ -216,15 +227,26 @@ function TriangleDiagram({ visible }: { visible: boolean }) {
         <div className="absolute flex items-center justify-center text-white" style={vertexStyle(TRI_BR.x, TRI_BR.y)}>
           <TriIcon name={exec.vertexIcon} className="w-7 h-7 lg:w-8 lg:h-8" />
         </div>
+        {/* Labels sit inside the white circle, above arrow tips */}
         <div
-          className="absolute flex flex-col items-center justify-center text-center w-[42%] max-w-[180px]"
-          style={vertexStyle(TRI_MID.x, TRI_MID.y)}
+          className="absolute z-10 flex flex-col items-center justify-center text-center rounded-full bg-white px-3 py-2"
+          style={{
+            ...vertexStyle(TRI_MID.x, TRI_MID.y),
+            width: `${((CENTER_R * 2 - 10) / TRI_VIEW.w) * 100}%`,
+            maxWidth: 128,
+            aspectRatio: '1',
+          }}
         >
-          <DollarSign className="w-9 h-9 lg:w-10 lg:h-10" style={{ color: GOLD }} strokeWidth={2.25} />
-          <p className="text-[8px] lg:text-[9px] font-black tracking-wider mt-1 leading-tight" style={{ color: GOLD }}>
+          <DollarSign className="w-7 h-7 lg:w-8 lg:h-8 shrink-0" style={{ color: GOLD }} strokeWidth={2.25} />
+          <p
+            className="text-[6px] lg:text-[7px] font-black leading-none mt-1 px-0.5 max-w-full"
+            style={{ color: GOLD, letterSpacing: '0.04em' }}
+          >
             {center.titleEn}
           </p>
-          <p className="text-[10px] lg:text-[11px] font-black text-brand-blue leading-tight">{center.titleAr}</p>
+          <p className="text-[8px] lg:text-[9px] font-black text-brand-blue leading-tight mt-1 px-0.5 max-w-full">
+            {center.titleAr}
+          </p>
         </div>
       </div>
     </motion.div>
