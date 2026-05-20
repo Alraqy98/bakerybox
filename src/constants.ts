@@ -84,7 +84,7 @@ export const CONTENT = {
     titleEn: "The Transformation Triangle",
     titleAr: "مثلث التحول التنفيذي",
     subtitle:
-      "القيمة الحقيقية تظهر عندما تعمل الحوكمة التشغيلية والإيرادات والتنفيذ بتناغم.",
+      "القيمة الحقيقية (النتائج داخل الشركة) تظهر عندما تعمل الحوكمة التشغيلية والإيرادات والتنفيذ بتناغم.",
     center: {
       titleEn: "HIDDEN VALUE RECOVERY",
       titleAr: "استعادة القيمة الخفية"
