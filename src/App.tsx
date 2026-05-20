@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   ChevronLeft, 
@@ -28,7 +28,8 @@ import {
   Car,
   Building2,
   MapPin,
-  Landmark
+  Landmark,
+  Info
 } from 'lucide-react';
 import { 
   PieChart, 
@@ -427,54 +428,116 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
 };
 
 const SlideExecutiveDiscovery = ({ step }: { step: number }) => {
-  const { titleAr, titleEn, examplesLabel, questions } = CONTENT.slideDiscovery;
+  const {
+    titleAr,
+    titleEn,
+    examplesLabel,
+    goalButtonLabel,
+    goalButtonHideLabel,
+    goalHeading,
+    questions,
+  } = CONTENT.slideDiscovery;
+  const [openGoalIndex, setOpenGoalIndex] = useState<number | null>(null);
 
   return (
-    <div className="presentation-slide flex flex-col gap-4 lg:gap-5 overflow-hidden">
-      <div className="shrink-0 border-b-2 border-slate-100 pb-3 lg:pb-4">
-        <p className="text-[10px] lg:text-xs font-black text-brand-orange uppercase tracking-[0.35em] mb-2">
+    <div className="presentation-slide flex flex-col gap-3 lg:gap-4 overflow-hidden">
+      <div className="shrink-0 border-b-2 border-slate-100 pb-2 lg:pb-3">
+        <p className="text-[10px] lg:text-xs font-black text-brand-orange uppercase tracking-[0.35em] mb-1">
           {titleEn}
         </p>
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-brand-blue leading-tight italic">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-brand-blue leading-tight italic">
           {titleAr}
         </h2>
       </div>
 
-      {/* Fixed 2×2 grid from step 0 — cards fade in place, no layout collapse */}
-      <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-4 lg:gap-5">
+      <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-3 lg:gap-4">
         {questions.map((q, i) => {
           const visible = step >= i + 1;
+          const goalOpen = openGoalIndex === i;
+
           return (
             <motion.article
               key={q.number}
               initial={false}
               animate={{ opacity: visible ? 1 : 0 }}
               transition={{ duration: 0.28 }}
-              className={`h-full min-h-[140px] md:min-h-0 flex flex-col gap-3 p-4 lg:p-5 rounded-xl lg:rounded-2xl border transition-colors duration-200 ${
+              className={`h-full min-h-[160px] md:min-h-0 flex flex-col gap-2 p-3 lg:p-4 rounded-xl lg:rounded-2xl border transition-colors duration-200 overflow-hidden ${
                 visible
                   ? 'bg-white border-slate-100 shadow-sm'
                   : 'bg-transparent border-transparent shadow-none pointer-events-none'
               }`}
               aria-hidden={!visible}
             >
-              <div className="space-y-1.5 shrink-0">
-                <span className="text-[10px] lg:text-xs font-black text-brand-orange uppercase tracking-widest">
-                  {q.number}
-                </span>
-                <h3 className="text-sm md:text-base lg:text-lg font-black text-brand-blue leading-snug">
+              <div className="shrink-0 space-y-1">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-[9px] lg:text-[10px] font-black text-brand-orange uppercase tracking-widest">
+                    {q.number}
+                  </span>
+                  {visible && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenGoalIndex(goalOpen ? null : i);
+                      }}
+                      className={`shrink-0 flex items-center gap-1 rounded-lg border px-2 py-1 text-[9px] lg:text-[10px] font-black transition-colors ${
+                        goalOpen
+                          ? 'border-brand-blue bg-brand-blue text-white'
+                          : 'border-brand-blue/20 bg-brand-blue/5 text-brand-blue hover:bg-brand-blue hover:text-white'
+                      }`}
+                    >
+                      <Info size={12} className="shrink-0" />
+                      <span>{goalOpen ? goalButtonHideLabel : goalButtonLabel}</span>
+                    </button>
+                  )}
+                </div>
+                <h3 className="text-xs md:text-sm lg:text-base font-black text-brand-blue leading-snug pe-1">
                   {q.question}
                 </h3>
               </div>
 
-              <div className="mt-auto space-y-2 pt-2 border-t border-dashed border-slate-200 shrink-0">
-                <p className="text-[9px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <AnimatePresence initial={false}>
+                {goalOpen && (
+                  <motion.div
+                    key="goal"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.22 }}
+                    className="shrink-0 overflow-hidden"
+                  >
+                    <div className="rounded-xl border border-brand-blue/15 bg-brand-blue/[0.04] p-2.5 lg:p-3 text-right">
+                      <p className="text-[10px] lg:text-xs font-black text-brand-blue mb-1">{goalHeading}</p>
+                      <p className="text-[10px] lg:text-xs font-bold text-slate-600 mb-1">{q.goalIntro}</p>
+                      <ul className="space-y-0.5">
+                        {q.goalItems.map((item) => (
+                          <li
+                            key={item}
+                            className="text-[10px] lg:text-[11px] font-semibold text-slate-700 leading-snug"
+                          >
+                            • {item}
+                          </li>
+                        ))}
+                      </ul>
+                      {'goalNote' in q && q.goalNote && (
+                        <p className="mt-1.5 text-[9px] lg:text-[10px] font-medium italic text-slate-500">
+                          {q.goalNote}
+                        </p>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="mt-auto min-h-0 flex flex-col gap-1.5 pt-2 border-t border-dashed border-slate-200 shrink-0">
+                <p className="text-[8px] lg:text-[9px] font-bold text-slate-400 uppercase tracking-wider shrink-0">
                   {examplesLabel}
                 </p>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1 max-h-[72px] lg:max-h-[88px] overflow-y-auto">
                   {q.examples.map((example) => (
                     <span
                       key={example}
-                      className="px-2 py-0.5 lg:px-2.5 lg:py-1 text-[10px] lg:text-xs font-semibold text-slate-500 bg-slate-50 border border-slate-100 rounded-md lg:rounded-lg italic"
+                      className="px-1.5 py-0.5 lg:px-2 lg:py-0.5 text-[8px] lg:text-[10px] font-semibold text-slate-500 bg-slate-50 border border-slate-100 rounded-md italic leading-tight"
                     >
                       {example}
                     </span>
@@ -1288,99 +1351,127 @@ const SlidePhaseTwo = ({ step }: { step: number }) => {
   );
 };
 
+const OutcomeCardShell = ({
+  children,
+  accentClass,
+  step,
+  delay,
+}: {
+  children: ReactNode;
+  accentClass: string;
+  step: number;
+  delay: number;
+}) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.96, y: 24 }}
+    animate={step >= 1 ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0.12, scale: 0.96, y: 24 }}
+    transition={{ delay, duration: 0.35 }}
+    className="pdf-print-outcome-card relative flex h-full min-h-[380px] flex-col overflow-hidden rounded-[2rem] border-2 border-slate-100 bg-white p-6 shadow-xl lg:min-h-[420px] lg:rounded-[3rem] lg:p-8"
+  >
+    <div className={`absolute right-0 top-0 h-full w-1.5 ${accentClass} opacity-30`} aria-hidden />
+    {children}
+  </motion.div>
+);
+
+const OutcomeCardHeader = ({
+  title,
+  icon,
+}: {
+  title: string;
+  icon: ReactNode;
+}) => (
+  <div className="mb-4 flex items-start gap-3 lg:mb-5 lg:gap-4">
+    <div className="shrink-0 text-brand-blue">{icon}</div>
+    <h3 className="flex-1 text-right text-xl font-black leading-snug text-brand-blue italic lg:text-[1.55rem] lg:leading-tight">
+      {title}
+    </h3>
+  </div>
+);
+
 const SlideOutcomes = ({ step }: { step: number }) => {
   const [arabicTitle, englishTitle] = CONTENT.slide7.title.split(' (');
   const { result } = useAssessment();
+  const readiness = CONTENT.slide7.outcomes[0];
+  const gapsAnalysis = CONTENT.slide7.outcomes[1];
   const raiInitial = result?.raiScore ?? null;
-
-  const formatPct = (value: number | null, placeholder: string) =>
-    value != null ? `%${value}` : placeholder;
+  const formatPct = (value: number | null) => (value != null ? `%${value}` : '—');
 
   return (
-    <div className="presentation-slide space-y-4 lg:space-y-6" dir="rtl">
+    <div className="presentation-slide flex flex-col gap-4 lg:gap-5" dir="rtl">
       <div className="border-b-2 border-slate-100 pb-3 text-right">
-        <h2 className="text-2xl lg:text-5xl font-black text-brand-blue italic leading-tight">{arabicTitle}</h2>
-        <p className="text-lg lg:text-2xl font-black text-brand-blue italic mt-0.5">({englishTitle}</p>
+        <h2 className="text-2xl font-black leading-tight text-brand-blue italic lg:text-5xl">{arabicTitle}</h2>
+        <p className="mt-0.5 text-lg font-black text-brand-blue italic lg:text-2xl">({englishTitle}</p>
       </div>
-      
-      <div className="pdf-print-outcomes-body flex flex-col gap-6 lg:gap-10 items-center justify-center h-[calc(100%-100px)] max-w-6xl mx-auto py-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-12 w-full">
-          {CONTENT.slide7.outcomes.map((o, i) => {
-            const gapsOutcome = 'columns' in o ? o : null;
 
-            return (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, scale: 0.9, y: 30 }}
-              animate={step >= 1 ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0.1, scale: 0.9, y: 30 }}
-              transition={{ delay: i * 0.2 }}
-              className="pdf-print-outcome-card p-8 lg:p-12 bg-white rounded-[2rem] lg:rounded-[4rem] border-2 border-slate-50 shadow-2xl hover:shadow-brand-blue/10 transition-all flex flex-col justify-between group relative overflow-hidden h-full min-h-[350px]"
-            >
-              <div className={`absolute top-0 right-0 w-2 h-full ${i === 0 ? 'bg-brand-blue' : 'bg-brand-orange'} opacity-20`}></div>
-              
-              <div className="space-y-4 lg:space-y-6 relative z-10 flex-grow flex flex-col">
-                 <div className="flex items-center gap-4 text-right">
-                   {i === 0 ? <Activity size={40} className="text-brand-blue shrink-0" /> : <BarChart3 size={40} className="text-brand-orange shrink-0" />}
-                   <h3 className={`text-xl lg:text-3xl font-black italic leading-tight ${i === 0 ? 'text-brand-blue' : 'text-brand-orange'}`}>{o.title}</h3>
-                 </div>
-
-                 {gapsOutcome ? (
-                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 flex-grow" dir="ltr">
-                     {gapsOutcome.columns.map((col, colIdx) => (
-                       <div
-                         key={col.labelEn}
-                         className={`flex flex-col rounded-[1.75rem] lg:rounded-[2.25rem] border-2 px-4 py-6 lg:px-6 lg:py-8 text-center ${
-                           colIdx === 0
-                             ? 'border-brand-blue/25 bg-white'
-                             : 'border-brand-orange/25 bg-white'
-                         }`}
-                       >
-                         <h4 className="text-lg lg:text-2xl font-black tracking-[0.15em] text-teal-700 italic">
-                           {col.labelEn}
-                         </h4>
-                         <p className="text-sm lg:text-base font-bold text-teal-600/90 mt-1 mb-5 lg:mb-6">
-                           ({col.labelAr})
-                         </p>
-                         <ul className="space-y-4 lg:space-y-5 flex-grow flex flex-col justify-center">
-                           {col.focuses.map((focus) => (
-                             <li key={focus.en} className="space-y-0.5">
-                               <p className="text-xs lg:text-sm font-black tracking-wider text-brand-blue uppercase leading-tight">
-                                 {focus.en}
-                               </p>
-                               <p className="text-sm lg:text-base font-black text-slate-800 leading-snug">
-                                 {focus.ar}
-                               </p>
-                             </li>
-                           ))}
-                         </ul>
-                       </div>
-                     ))}
-                   </div>
-                 ) : (
-                   <>
-                     <p className="text-xs lg:text-lg font-black font-mono text-slate-400 tracking-widest italic">{o.eng}</p>
-                     <p className="text-base lg:text-2xl font-bold italic leading-relaxed text-slate-600">{o.desc}</p>
-                   </>
-                 )}
+      <div className="pdf-print-outcomes-body mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center py-2 lg:py-4">
+        <div className="grid w-full grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:gap-8">
+          <OutcomeCardShell accentClass="bg-brand-blue" step={step} delay={0}>
+            <OutcomeCardHeader
+              title={readiness.title}
+              icon={<Activity size={36} className="lg:h-10 lg:w-10" />}
+            />
+            <p className="mb-3 text-[10px] font-black uppercase tracking-widest text-slate-400 italic lg:text-xs">
+              {readiness.eng}
+            </p>
+            <p className="mb-auto text-right text-base font-bold leading-relaxed text-slate-600 italic lg:text-xl">
+              {readiness.desc}
+            </p>
+            <div className="mt-6 flex gap-4 border-t border-slate-100 pt-6 lg:mt-8 lg:pt-8">
+              <div className="flex-1 rounded-3xl bg-red-50 px-3 py-4 text-center lg:px-4 lg:py-5">
+                <span className="mb-2 block text-[9px] font-black uppercase tracking-widest text-slate-400 lg:text-[10px]">
+                  Initial Assessment
+                </span>
+                <span className="text-2xl font-black italic leading-none text-[#e11d48] lg:text-4xl">
+                  {formatPct(raiInitial)}
+                </span>
               </div>
-
-              {!gapsOutcome && (
-              <div className="mt-8 flex items-center justify-between gap-6 border-t-2 border-slate-50 pt-8 relative z-10">
-                <div className="text-center bg-red-50 p-4 rounded-3xl flex-1">
-                  <span className="text-[10px] lg:text-xs text-slate-400 font-black uppercase tracking-widest block mb-2 leading-none">Initial Assessment</span>
-                  <span className="text-2xl lg:text-4xl font-black italic text-[#ff0000] leading-none">
-                    {formatPct(raiInitial, '—')}
-                  </span>
-                </div>
-                <div className="text-center bg-slate-50 p-4 rounded-3xl flex-1">
-                  <span className="text-[10px] lg:text-xs text-slate-400 font-black uppercase tracking-widest block mb-2 leading-none">After Deep Dive</span>
-                  <span className="text-2xl lg:text-4xl font-black italic text-green-500 leading-none">%xx</span>
-                </div>
+              <div className="flex-1 rounded-3xl bg-emerald-50/80 px-3 py-4 text-center lg:px-4 lg:py-5">
+                <span className="mb-2 block text-[9px] font-black uppercase tracking-widest text-slate-400 lg:text-[10px]">
+                  After Deep Dive
+                </span>
+                <span className="text-2xl font-black italic leading-none text-emerald-600 lg:text-4xl">%xx</span>
               </div>
-              )}
-            </motion.div>
-            );
-          })}
+            </div>
+          </OutcomeCardShell>
+
+          {'columns' in gapsAnalysis && (
+            <OutcomeCardShell accentClass="bg-brand-blue" step={step} delay={0.15}>
+              <OutcomeCardHeader
+                title={gapsAnalysis.title}
+                icon={<BarChart3 size={36} className="lg:h-10 lg:w-10" />}
+              />
+              <div
+                className="grid flex-1 grid-cols-2 items-stretch gap-3 lg:gap-5"
+                dir="ltr"
+              >
+                {gapsAnalysis.columns.map((pathCol) => (
+                  <div
+                    key={pathCol.labelEn}
+                    className="flex h-full min-h-[260px] flex-col items-center rounded-[1.75rem] border-2 border-slate-200/90 bg-white px-4 py-5 text-center lg:min-h-[300px] lg:rounded-[2rem] lg:px-5 lg:py-7"
+                  >
+                    <h4 className="text-lg font-black tracking-[0.12em] text-emerald-700 lg:text-2xl">
+                      {pathCol.labelEn}
+                    </h4>
+                    <p className="mt-0.5 text-sm font-bold text-emerald-600 lg:text-base">
+                      ({pathCol.labelAr})
+                    </p>
+                    <ul className="mt-5 flex w-full flex-1 flex-col justify-center gap-4 lg:mt-7 lg:gap-5">
+                      {pathCol.focuses.map((focus) => (
+                        <li key={focus.en} className="flex flex-col items-center gap-1">
+                          <span className="text-[10px] font-black uppercase tracking-[0.14em] text-brand-blue lg:text-[11px]">
+                            {focus.en}
+                          </span>
+                          <span className="text-sm font-black leading-snug text-slate-800 lg:text-base">
+                            {focus.ar}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </OutcomeCardShell>
+          )}
         </div>
       </div>
     </div>
