@@ -1,3 +1,4 @@
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -79,9 +80,80 @@ export const CONTENT = {
       descEn: "ACTIVATE RESULTS"
     }
   },
+  slideTriangle: {
+    titleEn: "The Transformation Triangle",
+    titleAr: "مثلث التحول التنفيذي",
+    subtitle:
+      "القيمة الحقيقية تظهر عندما تعمل الحوكمة التشغيلية والإيرادات والتنفيذ بتناغم.",
+    center: {
+      titleEn: "HIDDEN VALUE RECOVERY",
+      titleAr: "استعادة القيمة الخفية"
+    },
+    valueCreation: {
+      titleEn: "VALUE CREATION",
+      titleAr: "خلق قيمة مستدامة"
+    },
+    pillars: [
+      {
+        id: "governance",
+        number: "1",
+        titleEn: "OPERATIONAL GOVERNANCE",
+        titleAr: "الحوكمة التشغيلية",
+        color: "#1a365d",
+        vertexIcon: "landmark",
+        align: "right" as const,
+        items: [
+          { ar: "الهيكل", icon: "network" },
+          { ar: "الصلاحيات", icon: "users" },
+          { ar: "التقارير", icon: "fileChart" },
+          { ar: "الانضباط التشغيلي", icon: "shield" }
+        ]
+      },
+      {
+        id: "revenue",
+        number: "2",
+        titleEn: "REVENUE & COMMERCIAL PERFORMANCE",
+        titleAr: "الإيرادات والأداء التجاري",
+        color: "#0f766e",
+        vertexIcon: "trendingUp",
+        align: "left" as const,
+        items: [
+          { ar: "النمو", icon: "trendingUp" },
+          { ar: "التسعير", icon: "tag" },
+          { ar: "الاستفادة من الأصول", icon: "car" },
+          { ar: "الربحية", icon: "coins" },
+          { ar: "التحصيل وتحقيق الإيرادات", icon: "target" },
+          { ar: "التحويل وزيادة الطلب", icon: "filter" }
+        ]
+      },
+      {
+        id: "execution",
+        number: "3",
+        titleEn: "EXECUTION & ACTIVATION",
+        titleAr: "التنفيذ والتفعيل",
+        color: "#1d4ed8",
+        vertexIcon: "settings",
+        align: "right" as const,
+        items: [
+          { ar: "التنفيذ", icon: "rocket" },
+          { ar: "سرعة اتخاذ القرار", icon: "clock" },
+          { ar: "المتابعة والمساءلة", icon: "userCheck" },
+          { ar: "التوافق والمواءمة", icon: "link" },
+          { ar: "تفعيل الخطط وتحقيق النتائج", icon: "target" }
+        ]
+      }
+    ],
+    outcomes: [
+      { ar: "قيمة طويلة الأمد", icon: "gem" },
+      { ar: "قرارات أسرع وأدق", icon: "gauge" },
+      { ar: "كفاءة تشغيلية", icon: "target" },
+      { ar: "ربحية أعلى", icon: "pieChart" },
+      { ar: "نمو مستدام", icon: "lineChart" }
+    ]
+  },
   slide2: {
-    title: "نمط كثير من الشركات العائلية اليوم",
-    intro: "كثير من الشركات العائلية:",
+    title: "نمط كثير من الشركات اليوم",
+    intro: "كثير من الشركات:",
     positives: [
       "ناجحة تجارياً",
       "فرص نمو حقيقية",
@@ -103,7 +175,7 @@ export const CONTENT = {
     items: [
       "خبرات داخل شركات عالمية",
       "خبرات تشغيلية و تجارية مباشرة",
-      "العمل مع شركات عائلية متعددة",
+      "العمل مع شركات متعددة",
       "تطبيقات عملية في الحوكمة التشغيلية",
       "تجارب فعلية في النمو والتشغيل والمبيعات"
     ],
@@ -236,10 +308,10 @@ export const CONTENT = {
   },
   slide8: {
     title: "مثال عملي من الواقع (Real Operational Insight)",
-    context: "في إحدى الشركات العائلية: أظهرت نتائج الـ Initial Assessment انطباعاً مرتفعاً حول:",
+    context: "في إحدى الشركات: أظهرت نتائج الـ Initial Assessment انطباعاً مرتفعاً حول:",
     initialFeedback: ["الانضباط التشغيلي", "الهيكل الإداري", "مستوى الحوكمة", "وضوح العمليات"],
     deepDiveFound: "لكن بعد الـ: Deep Dive Assessment تم اكتشاف:",
-    findings: ["فجوات تشغيلية وإدارية غير ظاهرة", "اختناقات في الرؤية والتقارير", "فرص في الايرادات غير مستغلة", "فجوة قيمية كبيرة داخل الشركة"],
+    findings: ["فجوات تشغيلية وإدارية غير ظاهرة", "اختناقات في الرؤية والتقارير", "فرص في الايرادات غير مستغلة", "فجوة قيمة كبيرة داخل الشركة"],
     results: {
       title: "النتائج النهائية:",
       score: "Quantified Value Gap™",
@@ -248,7 +320,7 @@ export const CONTENT = {
     },
     conclusion: {
       title: "الاستنتاج:",
-      text: "في كثير من الشركات العائلية، قد يعطي النجاح الحالي انطباعاً بأن الأمور مستقرة، بينما توجد داخل الشركة: فرص غير مستغلة، اختناقات تشغيلية، وقيمة في الايرادات مفقودة لا تظهر في التقييمات السطحية."
+      text: "في كثير من الشركات، قد يعطي النجاح الحالي انطباعاً بأن الأمور مستقرة، بينما توجد داخل الشركة: فرص غير مستغلة، اختناقات تشغيلية، وقيمة في الايرادات مفقودة لا تظهر في التقييمات السطحية."
     }
   },
   slide9: {

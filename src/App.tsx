@@ -48,6 +48,7 @@ import {
   PolarRadiusAxis
 } from 'recharts';
 import { CONTENT } from './constants';
+import { SlideTransformationTriangle } from './SlideTransformationTriangle';
 
 const SLIDES = [
   'slideIntroLogo',
@@ -55,6 +56,7 @@ const SLIDES = [
   'slideDsRent',
   'slideDiscovery',
   'slideConcept',
+  'slideTriangle',
   'slide3',
   'slide4',
   'slide2',
@@ -87,6 +89,7 @@ export default function App() {
       case 'slideDsRent': return 9;
       case 'slideDiscovery': return 4;
       case 'slideConcept': return 0;
+      case 'slideTriangle': return 4;
       case 'slide2': return 3;
       case 'slide3': return 3;
       case 'slide4': return 2;
@@ -277,6 +280,7 @@ function renderSlide(index: number, step: number) {
     case 'slideDsRent': return <SlideDsRentUnderstanding step={step} />;
     case 'slideDiscovery': return <SlideExecutiveDiscovery step={step} />;
     case 'slideConcept': return <SlideConcept step={step} />;
+    case 'slideTriangle': return <SlideTransformationTriangle step={step} />;
     case 'slide2': return <SlideProblem step={step} />;
     case 'slide3': return <SlideBuild step={step} />;
     case 'slide4': return <SlideSectors step={step} />;
