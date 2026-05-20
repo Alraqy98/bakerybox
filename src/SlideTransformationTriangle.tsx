@@ -133,7 +133,8 @@ const TRI_BL = { x: 62, y: 262 };
 const TRI_BR = { x: 338, y: 262 };
 const TRI_MID = { x: 200, y: 176 };
 const TRI_BASE_MID = { x: 200, y: 262 };
-const CENTER_R = 56;
+const CENTER_R = 62;
+const VERTEX_R = 32;
 
 function vertexStyle(x: number, y: number) {
   return {
@@ -175,7 +176,7 @@ function TriangleDiagram({ visible }: { visible: boolean }) {
       initial={false}
       animate={{ opacity: visible ? 1 : 0 }}
       transition={{ duration: 0.35 }}
-      className={`relative w-full aspect-[4/3] max-h-[min(46vh,420px)] min-h-[200px] ${visible ? '' : 'pointer-events-none'}`}
+      className={`relative w-full max-w-[min(100%,580px)] mx-auto aspect-[4/3] min-h-[240px] max-h-[min(58vh,520px)] h-full flex-1 ${visible ? '' : 'pointer-events-none'}`}
       aria-hidden={!visible}
     >
       <svg viewBox={`0 0 ${TRI_VIEW.w} ${TRI_VIEW.h}`} className="w-full h-full overflow-visible" aria-hidden>
@@ -193,9 +194,9 @@ function TriangleDiagram({ visible }: { visible: boolean }) {
         <line x1={TRI_BL.x} y1={TRI_BL.y} x2={TRI_BR.x} y2={TRI_BR.y} stroke={NAVY} strokeWidth="7" strokeLinecap="round" />
         {/* Gold arrows — stop on the ring, not over the label */}
         {[
-          arrowPoints(TRI_TOP.x, TRI_TOP.y, 30, CENTER_R, 10),
-          arrowPoints(TRI_BL.x, TRI_BL.y, 30, CENTER_R, 10),
-          arrowPoints(TRI_BR.x, TRI_BR.y, 30, CENTER_R, 10),
+          arrowPoints(TRI_TOP.x, TRI_TOP.y, VERTEX_R, CENTER_R, 12),
+          arrowPoints(TRI_BL.x, TRI_BL.y, VERTEX_R, CENTER_R, 12),
+          arrowPoints(TRI_BR.x, TRI_BR.y, VERTEX_R, CENTER_R, 12),
         ].map((pts, i) => (
           <line
             key={i}
@@ -211,40 +212,42 @@ function TriangleDiagram({ visible }: { visible: boolean }) {
         {/* Connector to value box (below triangle) */}
         <line x1={TRI_BASE_MID.x} y1={TRI_BL.y + 2} x2={TRI_BASE_MID.x} y2={TRI_VIEW.h - 4} stroke={GOLD} strokeWidth="2" />
         {/* Vertices */}
-        <circle cx={TRI_TOP.x} cy={TRI_TOP.y} r="30" fill={gov.color} filter="url(#tri-vertex-shadow)" />
-        <circle cx={TRI_BL.x} cy={TRI_BL.y} r="30" fill={rev.color} filter="url(#tri-vertex-shadow)" />
-        <circle cx={TRI_BR.x} cy={TRI_BR.y} r="30" fill={exec.color} filter="url(#tri-vertex-shadow)" />
+        <circle cx={TRI_TOP.x} cy={TRI_TOP.y} r={VERTEX_R} fill={gov.color} filter="url(#tri-vertex-shadow)" />
+        <circle cx={TRI_BL.x} cy={TRI_BL.y} r={VERTEX_R} fill={rev.color} filter="url(#tri-vertex-shadow)" />
+        <circle cx={TRI_BR.x} cy={TRI_BR.y} r={VERTEX_R} fill={exec.color} filter="url(#tri-vertex-shadow)" />
         <circle cx={TRI_MID.x} cy={TRI_MID.y} r={CENTER_R} fill="white" stroke={GOLD} strokeWidth="3.5" />
       </svg>
 
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute flex items-center justify-center text-white" style={vertexStyle(TRI_TOP.x, TRI_TOP.y)}>
-          <TriIcon name={gov.vertexIcon} className="w-7 h-7 lg:w-8 lg:h-8" />
+          <TriIcon name={gov.vertexIcon} className="w-8 h-8 lg:w-9 lg:h-9" />
         </div>
         <div className="absolute flex items-center justify-center text-white" style={vertexStyle(TRI_BL.x, TRI_BL.y)}>
-          <TriIcon name={rev.vertexIcon} className="w-7 h-7 lg:w-8 lg:h-8" />
+          <TriIcon name={rev.vertexIcon} className="w-8 h-8 lg:w-9 lg:h-9" />
         </div>
         <div className="absolute flex items-center justify-center text-white" style={vertexStyle(TRI_BR.x, TRI_BR.y)}>
-          <TriIcon name={exec.vertexIcon} className="w-7 h-7 lg:w-8 lg:h-8" />
+          <TriIcon name={exec.vertexIcon} className="w-8 h-8 lg:w-9 lg:h-9" />
         </div>
         {/* Labels sit inside the white circle, above arrow tips */}
         <div
-          className="absolute z-10 flex flex-col items-center justify-center text-center rounded-full bg-white px-3 py-2"
+          className="absolute z-10 flex flex-col items-center justify-center text-center rounded-full bg-white px-4 py-3"
           style={{
             ...vertexStyle(TRI_MID.x, TRI_MID.y),
-            width: `${((CENTER_R * 2 - 10) / TRI_VIEW.w) * 100}%`,
-            maxWidth: 128,
+            width: `${((CENTER_R * 2 - 8) / TRI_VIEW.w) * 100}%`,
+            maxWidth: 200,
             aspectRatio: '1',
           }}
         >
-          <DollarSign className="w-7 h-7 lg:w-8 lg:h-8 shrink-0" style={{ color: GOLD }} strokeWidth={2.25} />
+          <DollarSign className="w-9 h-9 lg:w-11 lg:h-11 shrink-0" style={{ color: GOLD }} strokeWidth={2.25} />
           <p
-            className="text-[6px] lg:text-[7px] font-black leading-none mt-1 px-0.5 max-w-full"
-            style={{ color: GOLD, letterSpacing: '0.04em' }}
+            className="text-[7px] lg:text-[9px] xl:text-[10px] font-black leading-tight mt-1.5 px-1"
+            style={{ color: GOLD, letterSpacing: '0.06em' }}
           >
-            {center.titleEn}
+            HIDDEN VALUE
+            <br />
+            RECOVERY
           </p>
-          <p className="text-[8px] lg:text-[9px] font-black text-brand-blue leading-tight mt-1 px-0.5 max-w-full">
+          <p className="text-[9px] lg:text-[11px] xl:text-xs font-black text-brand-blue leading-snug mt-1.5 px-1">
             {center.titleAr}
           </p>
         </div>
@@ -263,10 +266,10 @@ export function SlideTransformationTriangle({ step }: { step: number }) {
   const [gov, rev, exec] = pillars;
 
   return (
-    <div className="presentation-slide flex flex-col gap-3 overflow-hidden !p-4 md:!p-6 lg:!p-8">
-      <header className="shrink-0 text-center space-y-1.5">
-        <h2 className="text-xl md:text-2xl lg:text-[1.65rem] font-black text-[#1a365d] leading-none">{titleEn}</h2>
-        <p className="text-lg md:text-xl lg:text-2xl font-black text-brand-blue">{titleAr}</p>
+    <div className="presentation-slide flex flex-col gap-2 overflow-hidden !p-4 md:!p-5 lg:!p-6">
+      <header className="shrink-0 text-center space-y-1">
+        <h2 className="text-lg md:text-xl lg:text-2xl font-black text-[#1a365d] leading-none">{titleEn}</h2>
+        <p className="text-base md:text-lg lg:text-xl font-black text-brand-blue">{titleAr}</p>
         <div className="flex items-center justify-center gap-2 max-w-lg mx-auto pt-1">
           <div className="flex-1 h-[2px]" style={{ backgroundColor: GOLD }} />
           <div className="w-2 h-2 rotate-45" style={{ backgroundColor: GOLD }} />
@@ -279,30 +282,30 @@ export function SlideTransformationTriangle({ step }: { step: number }) {
 
       {/* Three columns — no overlap */}
       <div
-        className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(280px,1.35fr)_minmax(0,1fr)] gap-4 lg:gap-5 items-stretch"
+        className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[minmax(0,20%)_1fr_minmax(0,20%)] gap-2 lg:gap-3 items-stretch"
         dir="ltr"
       >
-        <div className="hidden lg:flex flex-col justify-center min-h-0 py-2">
+        <div className="hidden lg:flex flex-col justify-center min-h-0 py-1 pr-1">
           <PillarListLeft pillar={rev} visible={showPillars} />
         </div>
 
-        <div className="flex flex-col items-center justify-center min-h-0 gap-0 py-1">
+        <div className="flex flex-col items-center justify-center min-h-0 flex-1 w-full py-0">
           <TriangleDiagram visible={showDiagram} />
           <motion.div
             initial={false}
             animate={{ opacity: showValue ? 1 : 0 }}
             transition={{ duration: 0.3 }}
-            className={`flex flex-col items-center shrink-0 -mt-1 ${showValue ? '' : 'pointer-events-none'}`}
+            className={`flex flex-col items-center shrink-0 -mt-2 ${showValue ? '' : 'pointer-events-none'}`}
             aria-hidden={!showValue}
           >
-            <div className="w-[2px] h-2 mb-1" style={{ backgroundColor: GOLD }} />
+            <div className="w-[2px] h-3 mb-1" style={{ backgroundColor: GOLD }} />
             <div
-              className="flex items-center gap-3 px-5 py-2.5 rounded-lg border-2 bg-white shadow-sm"
+              className="flex items-center gap-3 px-6 py-3 rounded-lg border-2 bg-white shadow-sm"
               style={{ borderColor: GOLD }}
             >
-              <BarChart3 className="w-5 h-5 shrink-0" style={{ color: GOLD }} strokeWidth={2.25} />
+              <BarChart3 className="w-5 h-5 lg:w-6 lg:h-6 shrink-0" style={{ color: GOLD }} strokeWidth={2.25} />
               <div className="text-center">
-                <p className="text-[9px] lg:text-[10px] font-black tracking-wider" style={{ color: GOLD }}>
+                <p className="text-[10px] lg:text-xs font-black tracking-wider" style={{ color: GOLD }}>
                   {valueCreation.titleEn}
                 </p>
                 <p className="text-xs lg:text-sm font-black text-brand-blue">{valueCreation.titleAr}</p>
@@ -311,7 +314,7 @@ export function SlideTransformationTriangle({ step }: { step: number }) {
           </motion.div>
         </div>
 
-        <div className="hidden lg:flex flex-col justify-between min-h-0 py-2 gap-6">
+        <div className="hidden lg:flex flex-col justify-between min-h-0 py-1 pl-1 gap-4">
           <PillarListRight pillar={gov} visible={showPillars} />
           <div className="h-px bg-slate-200/80 shrink-0" aria-hidden />
           <PillarListRight pillar={exec} visible={showPillars} />
