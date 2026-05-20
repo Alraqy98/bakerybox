@@ -55,6 +55,7 @@ import {
   getTrackDisplayNameAr,
   trackIdToSlideIndex,
 } from './assessment/types';
+import { getTrackInsight, getTrackInsightShort } from './assessment/trackInsight';
 
 const SLIDES = [
   'slideIntroLogo',
@@ -1033,6 +1034,10 @@ const SlidePhaseOne = ({ step }: { step: number }) => {
   const { result, openAssessment, clearResult } = useAssessment();
   const recommendedTrackIndex = result ? trackIdToSlideIndex(result.trackId) : null;
   const hasResult = result != null;
+  const trackInsight =
+    hasResult && result
+      ? getTrackInsight(result.trackId, result.raiScore, result.revenueScore)
+      : null;
 
   return (
     <div className="presentation-slide space-y-4 lg:space-y-6">
@@ -1058,6 +1063,9 @@ const SlidePhaseOne = ({ step }: { step: number }) => {
                </span>
                <span className="block text-base lg:text-2xl font-black text-brand-blue leading-tight">
                  RAI {result.raiScore}% · الإيرادات {result.revenueScore}%
+               </span>
+               <span className="block text-[10px] lg:text-xs font-bold text-slate-600 italic max-w-md leading-snug">
+                 {getTrackInsightShort(result.trackId, result.raiScore, result.revenueScore)}
                </span>
              </motion.div>
            ) : (
@@ -1161,10 +1169,10 @@ const SlidePhaseOne = ({ step }: { step: number }) => {
                 </>
               )}
               <h4
-                className={`relative mb-1 leading-tight italic lg:mb-2 ${
+                className={`relative leading-tight italic ${
                   isRecommended
-                    ? 'mt-8 text-base font-black text-brand-blue lg:mt-9 lg:text-lg'
-                    : 'text-base font-black text-brand-blue lg:text-lg'
+                    ? 'mb-2 mt-8 text-lg font-black text-brand-blue lg:mt-9 lg:text-xl'
+                    : 'mb-1 text-base font-black text-brand-blue lg:mb-2 lg:text-lg'
                 }`}
               >
                 {track.name}
@@ -1172,11 +1180,11 @@ const SlidePhaseOne = ({ step }: { step: number }) => {
               <p
                 className={`relative flex-grow leading-relaxed ${
                   isRecommended
-                    ? 'text-xs font-bold text-slate-700 lg:text-sm'
+                    ? 'text-sm font-bold text-slate-700 lg:text-base lg:leading-relaxed'
                     : 'text-xs font-medium italic text-slate-500 lg:text-sm'
                 }`}
               >
-                {isRecommended && result?.trackDescription ? result.trackDescription : track.desc}
+                {isRecommended && trackInsight ? trackInsight : track.desc}
               </p>
             </motion.div>
           );
