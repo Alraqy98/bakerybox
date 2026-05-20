@@ -1290,18 +1290,20 @@ const SlidePhaseTwo = ({ step }: { step: number }) => {
 
 const SlideOutcomes = ({ step }: { step: number }) => {
   const [arabicTitle, englishTitle] = CONTENT.slide7.title.split(' (');
+  const { result } = useAssessment();
+  const raiInitial = result?.raiScore ?? null;
+  const revenueInitial = result?.revenueScore ?? null;
+  const valueGapPct =
+    revenueInitial != null ? Math.max(0, 100 - revenueInitial) : null;
+
+  const formatPct = (value: number | null, placeholder: string) =>
+    value != null ? `%${value}` : placeholder;
 
   return (
     <div className="presentation-slide space-y-4 lg:space-y-6" dir="rtl">
-      <div className="flex justify-between items-end gap-4 lg:gap-6 border-b-2 border-slate-100 pb-3">
-        <div className="text-right">
-          <h2 className="text-2xl lg:text-5xl font-black text-brand-blue italic leading-tight">{arabicTitle}</h2>
-          <p className="text-lg lg:text-2xl font-black text-brand-blue italic mt-0.5">({englishTitle}</p>
-        </div>
-        <div className="text-right flex flex-col border-r-4 border-brand-orange pr-3 lg:pr-4">
-           <span className="text-[10px] lg:text-xs font-black tracking-[0.2em] text-[#ff0000] uppercase italic leading-none">Diagnostic Analysis</span>
-           <span className="text-lg lg:text-2xl font-black italic text-brand-orange leading-tight">Value Gap Discovery</span>
-        </div>
+      <div className="border-b-2 border-slate-100 pb-3 text-right">
+        <h2 className="text-2xl lg:text-5xl font-black text-brand-blue italic leading-tight">{arabicTitle}</h2>
+        <p className="text-lg lg:text-2xl font-black text-brand-blue italic mt-0.5">({englishTitle}</p>
       </div>
       
       <div className="pdf-print-outcomes-body flex flex-col gap-6 lg:gap-10 items-center justify-center h-[calc(100%-100px)] max-w-6xl mx-auto py-4">
@@ -1324,18 +1326,26 @@ const SlideOutcomes = ({ step }: { step: number }) => {
                  <p className="text-xs lg:text-lg font-black font-mono text-slate-400 tracking-widest italic">{o.eng}</p>
                  <div className="flex items-baseline gap-2 flex-wrap">
                    <p className={`text-base lg:text-2xl font-bold italic leading-relaxed ${i === 1 ? 'text-green-600' : 'text-slate-600'}`}>{o.desc}</p>
-                   {i === 1 && <span className="text-base lg:text-2xl text-green-500 font-black italic">XX$</span>}
+                   {i === 1 && (
+                     <span className="text-base lg:text-2xl text-green-500 font-black italic">
+                       {valueGapPct != null ? `%${valueGapPct}` : '—'}
+                     </span>
+                   )}
                  </div>
               </div>
                
               <div className="mt-8 flex items-center justify-between gap-6 border-t-2 border-slate-50 pt-8 relative z-10">
+                <div className="text-center bg-red-50 p-4 rounded-3xl flex-1">
+                  <span className="text-[10px] lg:text-xs text-slate-400 font-black uppercase tracking-widest block mb-2 leading-none">Initial Assessment</span>
+                  <span className="text-2xl lg:text-4xl font-black italic text-[#ff0000] leading-none">
+                    {i === 0
+                      ? formatPct(raiInitial, '—')
+                      : formatPct(revenueInitial, '—')}
+                  </span>
+                </div>
                 <div className="text-center bg-slate-50 p-4 rounded-3xl flex-1">
                   <span className="text-[10px] lg:text-xs text-slate-400 font-black uppercase tracking-widest block mb-2 leading-none">After Deep Dive</span>
                   <span className="text-2xl lg:text-4xl font-black italic text-green-500 leading-none">%xx</span>
-                </div>
-                <div className="text-center bg-red-50 p-4 rounded-3xl flex-1">
-                  <span className="text-[10px] lg:text-xs text-slate-400 font-black uppercase tracking-widest block mb-2 leading-none">Initial Assessment</span>
-                  <span className="text-2xl lg:text-4xl font-black italic text-[#ff0000] leading-none">{i === 0 ? '%70' : '%75'}</span>
                 </div>
               </div>
             </motion.div>
