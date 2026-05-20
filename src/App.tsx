@@ -53,6 +53,7 @@ const SLIDES = [
   'slideIntroLogo',
   'hero',
   'slideDsRent',
+  'slideDiscovery',
   'slideConcept',
   'slide3',
   'slide4',
@@ -84,6 +85,7 @@ export default function App() {
       case 'slideIntroLogo': return 0;
       case 'hero': return 0;
       case 'slideDsRent': return 9;
+      case 'slideDiscovery': return 4;
       case 'slideConcept': return 0;
       case 'slide2': return 3;
       case 'slide3': return 3;
@@ -273,6 +275,7 @@ function renderSlide(index: number, step: number) {
     case 'slideIntroLogo': return <SlideIntroLogo step={step} />;
     case 'hero': return <SlideHero step={step} />;
     case 'slideDsRent': return <SlideDsRentUnderstanding step={step} />;
+    case 'slideDiscovery': return <SlideExecutiveDiscovery step={step} />;
     case 'slideConcept': return <SlideConcept step={step} />;
     case 'slide2': return <SlideProblem step={step} />;
     case 'slide3': return <SlideBuild step={step} />;
@@ -319,6 +322,7 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
   const { titleAr, titleEn, logoSrc, logoAlt, services, points, footer } = CONTENT.slideDsRent;
   const [logoFailed, setLogoFailed] = useState(false);
   const bulletStartStep = 3;
+  const showBulletColumn = step >= bulletStartStep;
 
   return (
     <div className="presentation-slide flex flex-col gap-4 lg:gap-6 overflow-hidden">
@@ -327,16 +331,28 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
         animate={{ opacity: 1, y: 0 }}
         className="border-b-2 border-slate-100 pb-3 lg:pb-5 shrink-0"
       >
-        <p className="text-[10px] lg:text-xs font-black text-brand-orange uppercase tracking-[0.35em] mb-2">
+        <p className="text-[10px] lg:text-sm font-black text-brand-orange uppercase tracking-[0.35em] mb-2">
           {titleEn}
         </p>
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-brand-blue leading-tight italic">
+        <h2 className="text-2xl md:text-3xl lg:text-5xl font-black text-brand-blue leading-tight italic">
           {titleAr}
         </h2>
       </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-start">
-        <div className="lg:col-span-4 flex flex-col gap-3 lg:gap-4">
+      <div
+        className={
+          showBulletColumn
+            ? 'flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-stretch'
+            : 'flex-1 min-h-0 flex flex-col items-center justify-center gap-8 lg:gap-12 px-4 lg:px-12'
+        }
+      >
+        <div
+          className={
+            showBulletColumn
+              ? 'lg:col-span-5 flex flex-col gap-5 lg:gap-6 justify-center min-h-0'
+              : 'w-full max-w-5xl mx-auto flex flex-col gap-8 lg:gap-10'
+          }
+        >
           <AnimatePresence mode="wait">
             {step >= 1 && (
               <motion.div
@@ -345,20 +361,24 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.92 }}
                 transition={{ duration: 0.35 }}
-                className="h-[120px] lg:h-[160px] bg-white rounded-2xl lg:rounded-[2rem] border-2 border-slate-100 shadow-xl flex items-center justify-center p-5 lg:p-8"
+                className={
+                  showBulletColumn
+                    ? 'min-h-[200px] lg:min-h-[280px] flex-1 bg-black rounded-2xl lg:rounded-[2.5rem] border-2 border-slate-800 shadow-xl flex items-center justify-center p-8 lg:p-12'
+                    : 'min-h-[240px] sm:min-h-[280px] lg:min-h-[38vh] bg-black rounded-2xl lg:rounded-[3rem] border-2 border-slate-800 shadow-2xl flex items-center justify-center p-10 lg:p-14'
+                }
               >
                 {logoFailed ? (
-                  <div className="flex flex-col items-center gap-2 text-center">
-                    <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-2xl bg-brand-blue/10 flex items-center justify-center text-brand-blue">
-                      <Building2 size={32} className="lg:w-10 lg:h-10" strokeWidth={1.75} />
+                  <div className="flex flex-col items-center gap-4 lg:gap-6 text-center">
+                    <div className="w-20 h-20 lg:w-32 lg:h-32 rounded-2xl lg:rounded-3xl bg-brand-blue/10 flex items-center justify-center text-brand-blue">
+                      <Building2 size={48} className="lg:w-16 lg:h-16" strokeWidth={1.75} />
                     </div>
-                    <p className="text-lg lg:text-2xl font-black text-brand-blue italic">{logoAlt}</p>
+                    <p className="text-2xl lg:text-4xl font-black text-brand-blue italic">{logoAlt}</p>
                   </div>
                 ) : (
                   <img
                     src={logoSrc}
                     alt={logoAlt}
-                    className="max-h-full max-w-full object-contain"
+                    className="max-h-[min(32vh,320px)] lg:max-h-[min(38vh,400px)] w-full max-w-[min(100%,520px)] object-contain"
                     onError={() => setLogoFailed(true)}
                   />
                 )}
@@ -373,7 +393,11 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="grid grid-cols-3 gap-2 lg:gap-2.5"
+                className={
+                  showBulletColumn
+                    ? 'grid grid-cols-3 gap-3 lg:gap-4 shrink-0'
+                    : 'grid grid-cols-3 gap-4 lg:gap-6 w-full'
+                }
               >
                 {services.map((service, i) => {
                   const Icon = DS_RENT_SERVICE_ICONS[service.icon] ?? Layers;
@@ -383,15 +407,41 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.06, duration: 0.28 }}
-                      className="flex flex-col items-center gap-1 lg:gap-1.5 p-2 lg:p-2.5 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm text-center"
+                      className={
+                        showBulletColumn
+                          ? 'flex flex-col items-center gap-2 lg:gap-3 p-4 lg:p-5 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-md text-center'
+                          : 'flex flex-col items-center gap-3 lg:gap-4 p-5 lg:p-8 bg-white rounded-2xl lg:rounded-[2rem] border-2 border-slate-100 shadow-lg text-center'
+                      }
                     >
-                      <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-lg bg-[#dbeafe] flex items-center justify-center text-brand-blue">
-                        <Icon size={16} className="lg:w-[18px] lg:h-[18px]" strokeWidth={2.25} />
+                      <div
+                        className={
+                          showBulletColumn
+                            ? 'w-12 h-12 lg:w-16 lg:h-16 rounded-xl lg:rounded-2xl bg-[#dbeafe] flex items-center justify-center text-brand-blue'
+                            : 'w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-xl lg:rounded-2xl bg-[#dbeafe] flex items-center justify-center text-brand-blue'
+                        }
+                      >
+                        <Icon
+                          size={showBulletColumn ? 24 : 32}
+                          className={showBulletColumn ? 'lg:w-8 lg:h-8' : 'lg:w-10 lg:h-10'}
+                          strokeWidth={2.25}
+                        />
                       </div>
-                      <span className="text-[8px] lg:text-[9px] font-black text-brand-blue leading-tight">
+                      <span
+                        className={
+                          showBulletColumn
+                            ? 'text-xs lg:text-base font-black text-brand-blue leading-tight'
+                            : 'text-sm sm:text-base lg:text-xl font-black text-brand-blue leading-tight'
+                        }
+                      >
                         {service.label}
                       </span>
-                      <span className="text-[7px] font-bold text-slate-400 uppercase tracking-wider">
+                      <span
+                        className={
+                          showBulletColumn
+                            ? 'text-[9px] lg:text-xs font-bold text-slate-400 uppercase tracking-wider'
+                            : 'text-[10px] lg:text-sm font-bold text-slate-400 uppercase tracking-wider'
+                        }
+                      >
                         {service.labelEn}
                       </span>
                     </motion.div>
@@ -402,7 +452,8 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
           </AnimatePresence>
         </div>
 
-        <div className="lg:col-span-8 flex flex-col gap-3 lg:gap-4">
+        {showBulletColumn && (
+        <div className="lg:col-span-7 flex flex-col gap-3 lg:gap-4 min-h-0 justify-start">
           <ul className="flex flex-col gap-2 lg:gap-2.5 list-none m-0 p-0">
             <AnimatePresence initial={false}>
               {points.map((point, i) => {
@@ -444,6 +495,66 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
             )}
           </AnimatePresence>
         </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const SlideExecutiveDiscovery = ({ step }: { step: number }) => {
+  const { titleAr, titleEn, examplesLabel, questions } = CONTENT.slideDiscovery;
+
+  return (
+    <div className="presentation-slide flex flex-col gap-4 lg:gap-6 overflow-hidden">
+      <div className="shrink-0 border-b-2 border-slate-100 pb-3 lg:pb-5">
+        <p className="text-[10px] lg:text-sm font-black text-brand-orange uppercase tracking-[0.35em] mb-2">
+          {titleEn}
+        </p>
+        <h2 className="text-2xl md:text-3xl lg:text-5xl font-black text-brand-blue leading-tight italic">
+          {titleAr}
+        </h2>
+      </div>
+
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-5 auto-rows-fr overflow-y-auto lg:overflow-hidden pr-1">
+        <AnimatePresence initial={false}>
+          {questions.map((q, i) => {
+            if (step < i + 1) return null;
+            return (
+              <motion.article
+                key={q.number}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, ease: 'easeOut' }}
+                className="flex flex-col gap-3 lg:gap-4 p-4 lg:p-6 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm min-h-0"
+              >
+                <div className="space-y-1.5 lg:space-y-2">
+                  <span className="text-[10px] lg:text-xs font-black text-brand-orange uppercase tracking-widest">
+                    {q.number}
+                  </span>
+                  <h3 className="text-base md:text-lg lg:text-xl font-black text-brand-blue leading-snug">
+                    {q.question}
+                  </h3>
+                </div>
+
+                <div className="mt-auto space-y-2 lg:space-y-2.5 pt-2 border-t border-dashed border-slate-200">
+                  <p className="text-[9px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    {examplesLabel}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5 lg:gap-2">
+                    {q.examples.map((example) => (
+                      <span
+                        key={example}
+                        className="px-2.5 py-1 lg:px-3 lg:py-1.5 text-[11px] lg:text-sm font-semibold text-slate-500 bg-slate-50 border border-slate-100 rounded-lg lg:rounded-xl italic"
+                      >
+                        {example}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.article>
+            );
+          })}
+        </AnimatePresence>
       </div>
     </div>
   );
