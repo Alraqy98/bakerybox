@@ -49,13 +49,18 @@ import {
 } from 'recharts';
 import { CONTENT } from './constants';
 import { SlideTransformationTriangle } from './SlideTransformationTriangle';
+import { AssessmentOverlay } from './components/AssessmentOverlay';
+import { useAssessment } from './context/AssessmentContext';
+import {
+  getTrackDisplayNameAr,
+  trackIdToSlideIndex,
+} from './assessment/types';
 
 const SLIDES = [
   'slideIntroLogo',
   'hero',
   'slideDsRent',
   'slideDiscovery',
-  'slide3',
   'slide4',
   'slide2',
   'slideGap',
@@ -77,6 +82,7 @@ export default function App() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState(0);
+  const { isOverlayOpen, result } = useAssessment();
   const isPdfMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('pdf');
 
   // Define max steps for each slide (0-indexed)
@@ -89,7 +95,6 @@ export default function App() {
       case 'slideDiscovery': return 4;
       case 'slideTriangle': return 4;
       case 'slide2': return 3;
-      case 'slide3': return 3;
       case 'slide4': return 2;
       case 'slideGap': return 2;
       case 'slideTimeline': return 4;
@@ -222,6 +227,7 @@ export default function App() {
       <main 
         className="relative flex-grow overflow-hidden cursor-pointer"
         onClick={(e) => {
+          if (isOverlayOpen) return;
           // Prevent advancing if clicking a link or button
           if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('a')) return;
           paginate(1);
@@ -267,6 +273,8 @@ export default function App() {
            <span className="text-[10px] font-black tracking-widest text-slate-300 uppercase">Slide {currentSlide + 1} / {SLIDES.length}</span>
         </div>
       </footer>
+
+      <AnimatePresence>{isOverlayOpen ? <AssessmentOverlay /> : null}</AnimatePresence>
     </div>
   );
 }
@@ -279,7 +287,6 @@ function renderSlide(index: number, step: number) {
     case 'slideDiscovery': return <SlideExecutiveDiscovery step={step} />;
     case 'slideTriangle': return <SlideTransformationTriangle step={step} />;
     case 'slide2': return <SlideProblem step={step} />;
-    case 'slide3': return <SlideBuild step={step} />;
     case 'slide4': return <SlideSectors step={step} />;
     case 'slideGap': return <SlideGrowthGap step={step} />;
     case 'slideTimeline': return <SlideTimeline step={step} />;
@@ -1023,7 +1030,10 @@ const SlideTimeline = ({ step }: { step: number }) => (
 
 const SlidePhaseOne = ({ step }: { step: number }) => {
   const [arabicTitle, englishTitle] = CONTENT.slide5.title.split(' | ');
-  
+  const { result, openAssessment, clearResult } = useAssessment();
+  const recommendedTrackIndex = result ? trackIdToSlideIndex(result.trackId) : null;
+  const hasResult = result != null;
+
   return (
     <div className="presentation-slide space-y-4 lg:space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 lg:gap-4 border-b-2 border-slate-100 pb-3 lg:pb-4">
@@ -1036,8 +1046,25 @@ const SlidePhaseOne = ({ step }: { step: number }) => {
              {CONTENT.slide5.subtitle}
            </p>
          </div>
-         <div className="bg-brand-blue/5 px-6 lg:px-8 py-3 lg:py-5 rounded-full border border-brand-blue/10 shadow-sm">
-           <span className="text-lg lg:text-3xl font-black uppercase tracking-[0.1em] text-brand-blue leading-tight whitespace-nowrap">{CONTENT.slide5.intro}</span>
+         <div className="bg-brand-blue/5 px-6 lg:px-8 py-3 lg:py-5 rounded-full border border-brand-blue/10 shadow-sm text-center">
+           {hasResult && result ? (
+             <motion.div
+               initial={{ opacity: 0, scale: 0.95 }}
+               animate={{ opacity: 1, scale: 1 }}
+               className="space-y-1"
+             >
+               <span className="block text-xs lg:text-sm font-black text-brand-orange uppercase tracking-widest">
+                 نتائج التقييم — {getTrackDisplayNameAr(result.trackId)}
+               </span>
+               <span className="block text-base lg:text-2xl font-black text-brand-blue leading-tight">
+                 RAI {result.raiScore}% · الإيرادات {result.revenueScore}%
+               </span>
+             </motion.div>
+           ) : (
+             <span className="text-lg lg:text-3xl font-black uppercase tracking-[0.1em] text-brand-blue leading-tight whitespace-nowrap">
+               {CONTENT.slide5.intro}
+             </span>
+           )}
          </div>
       </div>
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-stretch">
@@ -1063,32 +1090,97 @@ const SlidePhaseOne = ({ step }: { step: number }) => {
             animate={{ opacity: 1, y: 0 }}
             className="pt-2"
           >
-            <a
-              href="https://rai-assessment.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-4 lg:p-6 bg-brand-blue hover:bg-brand-orange text-white font-black italic text-center rounded-[2rem] shadow-xl transition-all flex items-center justify-center gap-4 group border-3 border-white/20 hover:scale-105 active:scale-95"
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (hasResult) clearResult();
+                openAssessment();
+              }}
+              className="w-full p-4 lg:p-6 bg-brand-blue hover:bg-brand-orange text-white font-black italic text-center rounded-[2rem] shadow-xl transition-all flex items-center justify-center gap-4 group border-3 border-white/20 hover:scale-105 active:scale-95"
             >
-              <span className="text-lg lg:text-2xl">ابدأ التقييم الآن</span>
+              <span className="text-lg lg:text-2xl">
+                {hasResult ? 'إعادة التقييم' : 'ابدأ التقييم الآن'}
+              </span>
               <Globe size={28} className="group-hover:rotate-12 transition-transform" />
-            </a>
+            </button>
           </motion.div>
         )}
       </motion.div>
-      <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
-        {CONTENT.slide5.tracks.map((track, i) => (
-          <motion.div 
-            key={i}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={step >= 2 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
-            transition={{ delay: 0.3 + i * 0.1 }}
-            className="p-4 lg:p-6 rounded-[1.5rem] lg:rounded-[2rem] bg-white border border-slate-100 shadow-md group hover:border-brand-blue/40 transition-all relative overflow-hidden flex flex-col hover:-translate-y-1"
-          >
-             <div className="absolute right-0 top-0 w-1 lg:w-1.5 h-full bg-slate-100 group-hover:bg-brand-blue transition-all"></div>
-             <h4 className="text-base lg:text-lg font-black text-brand-blue mb-1 lg:mb-2 italic leading-tight">{track.name}</h4>
-             <p className="text-xs lg:text-sm text-slate-500 font-medium italic leading-relaxed">{track.desc}</p>
-          </motion.div>
-        ))}
+      <div
+        className={`lg:col-span-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 items-stretch ${
+          hasResult ? 'relative' : ''
+        }`}
+      >
+        {hasResult && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="pointer-events-none absolute left-1/2 top-1/2 hidden h-[118%] w-[34%] -translate-x-1/2 -translate-y-1/2 rounded-[2.5rem] bg-brand-orange/15 blur-2xl lg:block"
+            aria-hidden
+          />
+        )}
+        {CONTENT.slide5.tracks.map((track, i) => {
+          const isRecommended = recommendedTrackIndex === i;
+          const isDimmed = hasResult && !isRecommended;
+
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={
+                step >= 2
+                  ? {
+                      opacity: isDimmed ? 0.28 : 1,
+                      scale: isRecommended ? 1.07 : isDimmed ? 0.86 : 1,
+                      filter: isDimmed ? 'grayscale(0.95)' : 'grayscale(0)',
+                    }
+                  : { opacity: 0, scale: 0.95 }
+              }
+              transition={{ delay: 0.3 + i * 0.1, duration: 0.45 }}
+              className={`relative flex flex-col overflow-hidden rounded-[1.5rem] border p-4 transition-all duration-500 lg:rounded-[2rem] lg:p-6 ${
+                isRecommended
+                  ? 'z-20 border-brand-orange bg-gradient-to-br from-white via-white to-emerald-50/80 shadow-2xl shadow-brand-orange/30 ring-4 ring-brand-orange/40 lg:-translate-y-2'
+                  : isDimmed
+                    ? 'border-slate-100/70 bg-slate-50/95 shadow-sm pointer-events-none saturate-50'
+                    : 'border-slate-100 bg-white shadow-md group hover:-translate-y-1 hover:border-brand-blue/40'
+              }`}
+            >
+              <div
+                aria-hidden
+                className={`absolute right-0 top-0 h-full ${
+                  isRecommended ? 'w-2 bg-brand-orange' : 'w-1 bg-slate-100 group-hover:bg-brand-blue lg:w-1.5'
+                }`}
+              />
+              {isRecommended && (
+                <>
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-orange/[0.08] to-transparent" />
+                  <span className="absolute left-3 top-3 z-10 rounded-full bg-brand-orange px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-white shadow-md lg:text-[10px]">
+                    المسار المقترح لكم
+                  </span>
+                </>
+              )}
+              <h4
+                className={`relative mb-1 leading-tight italic lg:mb-2 ${
+                  isRecommended
+                    ? 'mt-8 text-base font-black text-brand-blue lg:mt-9 lg:text-lg'
+                    : 'text-base font-black text-brand-blue lg:text-lg'
+                }`}
+              >
+                {track.name}
+              </h4>
+              <p
+                className={`relative flex-grow leading-relaxed ${
+                  isRecommended
+                    ? 'text-xs font-bold text-slate-700 lg:text-sm'
+                    : 'text-xs font-medium italic text-slate-500 lg:text-sm'
+                }`}
+              >
+                {isRecommended && result?.trackDescription ? result.trackDescription : track.desc}
+              </p>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   </div>

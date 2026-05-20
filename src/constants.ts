@@ -368,6 +368,6 @@ export const CONTENT = {
     title: "شكراً لكم",
     subtitle: "نتطلع للعمل معكم نحو تحقيق قصة تحول ناجحة استثنائية",
     contact: "م. رائد أبوعيسى",
-    website: "rai-assessment.vercel.app"
+    website: "https://rai-assessment.vercel.app/services?service=car-rental"
   }
 };
