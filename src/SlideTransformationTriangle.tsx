@@ -55,53 +55,73 @@ const ICONS: Record<string, LucideIcon> = {
 
 type Pillar = (typeof CONTENT.slideTriangle.pillars)[number];
 
-function TriangleIcon({ name, className }: { name: string; className?: string }) {
+function TriIcon({ name, className }: { name: string; className?: string }) {
   const Icon = ICONS[name] ?? Target;
   return <Icon className={className} strokeWidth={2} />;
 }
 
-function PillarBlock({
-  pillar,
-  visible,
-  align,
-}: {
-  pillar: Pillar;
-  visible: boolean;
-  align: 'left' | 'right';
-}) {
-  const isRight = align === 'right';
-
+/** Revenue (left of triangle): icon → text */
+function PillarListLeft({ pillar, visible }: { pillar: Pillar; visible: boolean }) {
   return (
     <motion.div
       initial={false}
       animate={{ opacity: visible ? 1 : 0 }}
-      transition={{ duration: 0.28 }}
-      className={`flex flex-col gap-1 min-w-0 ${isRight ? 'items-start text-left' : 'items-end text-right'} ${
-        visible ? '' : 'pointer-events-none'
-      }`}
+      transition={{ duration: 0.3 }}
+      className={`space-y-2 ${visible ? '' : 'pointer-events-none'}`}
       aria-hidden={!visible}
-      dir="ltr"
     >
-      <p className="text-[8px] lg:text-[9px] font-black tracking-wide leading-tight" style={{ color: pillar.color }}>
-        {pillar.number}. {pillar.titleEn}
-      </p>
-      <p className="text-[10px] lg:text-xs font-black leading-tight" style={{ color: pillar.color }}>
-        {pillar.titleAr}
-      </p>
-      <ul className={`mt-1 space-y-1.5 ${isRight ? 'items-start' : 'items-end'}`}>
+      <div>
+        <p className="text-[10px] lg:text-[11px] font-black tracking-wide" style={{ color: pillar.color }}>
+          {pillar.number}. {pillar.titleEn}
+        </p>
+        <p className="text-xs lg:text-sm font-black mt-0.5" style={{ color: pillar.color }}>
+          {pillar.titleAr}
+        </p>
+      </div>
+      <ul className="space-y-2">
         {pillar.items.map((item) => (
-          <li
-            key={item.ar}
-            className={`flex items-center gap-2 ${isRight ? 'flex-row' : 'flex-row-reverse'}`}
-          >
+          <li key={item.ar} className="flex items-center gap-2.5">
             <span
-              className="w-7 h-7 lg:w-8 lg:h-8 rounded-md flex items-center justify-center shrink-0"
-              style={{ backgroundColor: `${pillar.color}14`, color: pillar.color }}
+              className="w-8 h-8 lg:w-9 lg:h-9 rounded-md flex items-center justify-center shrink-0"
+              style={{ backgroundColor: `${pillar.color}12`, color: pillar.color }}
             >
-              <TriangleIcon name={item.icon} className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
+              <TriIcon name={item.icon} className="w-4 h-4 lg:w-[18px] lg:h-[18px]" />
             </span>
-            <span className="text-[10px] lg:text-[11px] font-bold text-slate-600 leading-tight max-w-[140px]">
-              {item.ar}
+            <span className="text-[11px] lg:text-xs font-bold text-slate-600 leading-snug">{item.ar}</span>
+          </li>
+        ))}
+      </ul>
+    </motion.div>
+  );
+}
+
+/** Governance & Execution (right of triangle): text ← icon */
+function PillarListRight({ pillar, visible }: { pillar: Pillar; visible: boolean }) {
+  return (
+    <motion.div
+      initial={false}
+      animate={{ opacity: visible ? 1 : 0 }}
+      transition={{ duration: 0.3 }}
+      className={`space-y-2 text-right ${visible ? '' : 'pointer-events-none'}`}
+      aria-hidden={!visible}
+    >
+      <div>
+        <p className="text-[10px] lg:text-[11px] font-black tracking-wide" style={{ color: pillar.color }}>
+          {pillar.number}. {pillar.titleEn}
+        </p>
+        <p className="text-xs lg:text-sm font-black mt-0.5" style={{ color: pillar.color }}>
+          {pillar.titleAr}
+        </p>
+      </div>
+      <ul className="space-y-2">
+        {pillar.items.map((item) => (
+          <li key={item.ar} className="flex items-center justify-end gap-2.5">
+            <span className="text-[11px] lg:text-xs font-bold text-slate-600 leading-snug">{item.ar}</span>
+            <span
+              className="w-8 h-8 lg:w-9 lg:h-9 rounded-md flex items-center justify-center shrink-0"
+              style={{ backgroundColor: `${pillar.color}12`, color: pillar.color }}
+            >
+              <TriIcon name={item.icon} className="w-4 h-4 lg:w-[18px] lg:h-[18px]" />
             </span>
           </li>
         ))}
@@ -110,93 +130,71 @@ function PillarBlock({
   );
 }
 
-function TransformationTriangleGraphic({ visible }: { visible: boolean }) {
+function TriangleDiagram({ visible }: { visible: boolean }) {
   const { center, pillars } = CONTENT.slideTriangle;
   const gov = pillars[0];
   const rev = pillars[1];
   const exec = pillars[2];
 
-  const top = { x: 200, y: 48 };
-  const left = { x: 68, y: 292 };
-  const right = { x: 332, y: 292 };
-  const centerPt = { x: 200, y: 198 };
+  const top = { x: 200, y: 42 };
+  const bl = { x: 62, y: 268 };
+  const br = { x: 338, y: 268 };
+  const mid = { x: 200, y: 178 };
 
   return (
     <motion.div
       initial={false}
       animate={{ opacity: visible ? 1 : 0 }}
-      transition={{ duration: 0.3 }}
-      className={`absolute inset-0 flex items-center justify-center ${visible ? '' : 'pointer-events-none'}`}
+      transition={{ duration: 0.35 }}
+      className={`absolute inset-0 ${visible ? '' : 'pointer-events-none'}`}
       aria-hidden={!visible}
-      dir="ltr"
     >
-      <div className="relative w-[88%] max-w-[380px] aspect-[400/340]">
-        <svg viewBox="0 0 400 340" className="w-full h-full overflow-visible" aria-hidden>
-          <defs>
-            <marker id="tri-arrow" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
-              <path d="M0,0 L7,3.5 L0,7 Z" fill={GOLD} />
-            </marker>
-          </defs>
-          {/* Colored triangle sides (like reference) */}
-          <line x1={top.x} y1={top.y} x2={left.x} y2={left.y} stroke={TEAL} strokeWidth="5" strokeLinecap="round" />
-          <line x1={top.x} y1={top.y} x2={right.x} y2={right.y} stroke={ROYAL} strokeWidth="5" strokeLinecap="round" />
-          <line x1={left.x} y1={left.y} x2={right.x} y2={right.y} stroke={NAVY} strokeWidth="5" strokeLinecap="round" />
-          {/* Gold arrows to center */}
-          <line
-            x1={top.x}
-            y1={top.y + 28}
-            x2={centerPt.x}
-            y2={centerPt.y - 40}
-            stroke={GOLD}
-            strokeWidth="2"
-            markerEnd="url(#tri-arrow)"
-          />
-          <line
-            x1={left.x + 22}
-            y1={left.y - 18}
-            x2={centerPt.x - 28}
-            y2={centerPt.y + 28}
-            stroke={GOLD}
-            strokeWidth="2"
-            markerEnd="url(#tri-arrow)"
-          />
-          <line
-            x1={right.x - 22}
-            y1={right.y - 18}
-            x2={centerPt.x + 28}
-            y2={centerPt.y + 28}
-            stroke={GOLD}
-            strokeWidth="2"
-            markerEnd="url(#tri-arrow)"
-          />
-          <circle cx={top.x} cy={top.y} r="30" fill={gov.color} />
-          <circle cx={left.x} cy={left.y} r="30" fill={rev.color} />
-          <circle cx={right.x} cy={right.y} r="30" fill={exec.color} />
-          <circle cx={centerPt.x} cy={centerPt.y} r="48" fill="white" stroke={GOLD} strokeWidth="3" />
-        </svg>
+      <svg
+        viewBox="0 0 400 300"
+        className="absolute left-1/2 top-[6%] -translate-x-1/2 w-[min(92%,420px)] h-[min(68%,340px)]"
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden
+      >
+        <defs>
+          <marker id="tri-gold-arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill={GOLD} />
+          </marker>
+          <filter id="vertex-shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.2" />
+          </filter>
+        </defs>
+        <line x1={top.x} y1={top.y} x2={bl.x} y2={bl.y} stroke={TEAL} strokeWidth="6" strokeLinecap="round" />
+        <line x1={top.x} y1={top.y} x2={br.x} y2={br.y} stroke={ROYAL} strokeWidth="6" strokeLinecap="round" />
+        <line x1={bl.x} y1={bl.y} x2={br.x} y2={br.y} stroke={NAVY} strokeWidth="6" strokeLinecap="round" />
+        <line x1={top.x} y1={top.y + 26} x2={mid.x} y2={mid.y - 38} stroke={GOLD} strokeWidth="2" markerEnd="url(#tri-gold-arrow)" />
+        <line x1={bl.x + 20} y1={bl.y - 16} x2={mid.x - 26} y2={mid.y + 24} stroke={GOLD} strokeWidth="2" markerEnd="url(#tri-gold-arrow)" />
+        <line x1={br.x - 20} y1={br.y - 16} x2={mid.x + 26} y2={mid.y + 24} stroke={GOLD} strokeWidth="2" markerEnd="url(#tri-gold-arrow)" />
+        <circle cx={top.x} cy={top.y} r="28" fill={gov.color} filter="url(#vertex-shadow)" />
+        <circle cx={bl.x} cy={bl.y} r="28" fill={rev.color} filter="url(#vertex-shadow)" />
+        <circle cx={br.x} cy={br.y} r="28" fill={exec.color} filter="url(#vertex-shadow)" />
+        <circle cx={mid.x} cy={mid.y} r="44" fill="white" stroke={GOLD} strokeWidth="3" />
+      </svg>
 
+      {/* Vertex icons */}
+      <div className="absolute left-1/2 top-[6%] w-[min(92%,420px)] h-[min(68%,340px)] -translate-x-1/2 pointer-events-none">
+        <div className="absolute text-white" style={{ top: '2%', left: '50%', transform: 'translate(-50%,0)' }}>
+          <TriIcon name={gov.vertexIcon} className="w-7 h-7" />
+        </div>
+        <div className="absolute text-white" style={{ bottom: '4%', left: '7%' }}>
+          <TriIcon name={rev.vertexIcon} className="w-7 h-7" />
+        </div>
+        <div className="absolute text-white" style={{ bottom: '4%', right: '7%' }}>
+          <TriIcon name={exec.vertexIcon} className="w-7 h-7" />
+        </div>
         <div
-          className="absolute flex items-center justify-center text-white"
-          style={{ top: '5%', left: '50%', transform: 'translate(-50%, -50%)', width: 48, height: 48 }}
+          className="absolute flex flex-col items-center text-center"
+          style={{ top: '48%', left: '50%', transform: 'translate(-50%,-50%)' }}
         >
-          <TriangleIcon name={gov.vertexIcon} className="w-6 h-6" />
-        </div>
-        <div className="absolute flex items-center justify-center text-white" style={{ bottom: '8%', left: '11%' }}>
-          <TriangleIcon name={rev.vertexIcon} className="w-6 h-6" />
-        </div>
-        <div className="absolute flex items-center justify-center text-white" style={{ bottom: '8%', right: '11%' }}>
-          <TriangleIcon name={exec.vertexIcon} className="w-6 h-6" />
-        </div>
-
-        <div
-          className="absolute flex flex-col items-center justify-center text-center"
-          style={{ top: '52%', left: '50%', transform: 'translate(-50%, -50%)', width: '36%' }}
-        >
-          <DollarSign className="w-8 h-8 lg:w-9 lg:h-9 mb-0.5" style={{ color: GOLD }} strokeWidth={2.25} />
-          <p className="text-[7px] lg:text-[8px] font-black tracking-wider leading-tight" style={{ color: GOLD }}>
+          <DollarSign className="w-9 h-9 lg:w-10 lg:h-10" style={{ color: GOLD }} strokeWidth={2.25} />
+          <p className="text-[8px] lg:text-[9px] font-black tracking-wider mt-1" style={{ color: GOLD }}>
             {center.titleEn}
           </p>
-          <p className="text-[9px] lg:text-[10px] font-black text-brand-blue leading-tight">{center.titleAr}</p>
+          <p className="text-[10px] lg:text-[11px] font-black text-brand-blue">{center.titleAr}</p>
         </div>
       </div>
     </motion.div>
@@ -213,71 +211,77 @@ export function SlideTransformationTriangle({ step }: { step: number }) {
   const [gov, rev, exec] = pillars;
 
   return (
-    <div className="presentation-slide flex flex-col gap-2 lg:gap-3 overflow-hidden !p-3 md:!p-5 lg:!p-6">
-      <div className="shrink-0 text-center space-y-1">
-        <h2 className="text-base md:text-lg lg:text-xl font-black text-[#1a365d] tracking-tight">{titleEn}</h2>
-        <p className="text-sm md:text-base lg:text-lg font-black text-brand-blue italic">{titleAr}</p>
-        <div className="flex items-center justify-center gap-2 max-w-md mx-auto px-6">
-          <div className="flex-1 h-px" style={{ backgroundColor: GOLD }} />
-          <div className="w-1.5 h-1.5 rotate-45 shrink-0" style={{ backgroundColor: GOLD }} />
-          <div className="flex-1 h-px" style={{ backgroundColor: GOLD }} />
+    <div className="presentation-slide flex flex-col gap-2 overflow-hidden !p-4 md:!p-6 lg:!p-8">
+      {/* Header — match reference scale */}
+      <header className="shrink-0 text-center space-y-1.5 pb-1">
+        <h2 className="text-xl md:text-2xl lg:text-[1.75rem] font-black text-[#1a365d] tracking-tight leading-none">
+          {titleEn}
+        </h2>
+        <p className="text-lg md:text-xl lg:text-2xl font-black text-brand-blue leading-tight">{titleAr}</p>
+        <div className="flex items-center justify-center gap-2 max-w-lg mx-auto pt-1">
+          <div className="flex-1 h-[2px]" style={{ backgroundColor: GOLD }} />
+          <div className="w-2 h-2 rotate-45 shrink-0" style={{ backgroundColor: GOLD }} />
+          <div className="flex-1 h-[2px]" style={{ backgroundColor: GOLD }} />
         </div>
-        <p className="text-[9px] md:text-[10px] lg:text-xs font-semibold text-slate-500 max-w-2xl mx-auto leading-relaxed px-2">
+        <p className="text-[10px] md:text-xs lg:text-sm font-medium text-slate-500 max-w-3xl mx-auto leading-relaxed px-4">
           {subtitle}
         </p>
-      </div>
+      </header>
 
-      {/* Diagram canvas — LTR layout matches reference image */}
-      <div className="flex-1 min-h-[300px] lg:min-h-0 relative" dir="ltr">
-        <TransformationTriangleGraphic visible={showDiagram} />
+      {/* Canvas: triangle + lists hugging vertices (reference layout) */}
+      <div
+        className="flex-1 min-h-[340px] lg:min-h-0 relative w-full max-w-6xl mx-auto"
+        dir="ltr"
+      >
+        <TriangleDiagram visible={showDiagram} />
 
-        {/* 1. Governance — top right of triangle */}
-        <div className="absolute top-[2%] right-[3%] w-[28%] max-w-[200px] z-10">
-          <PillarBlock pillar={gov} visible={showPillars} align="left" />
+        {/* 1. Governance — upper right of triangle */}
+        <div className="absolute top-[4%] right-[2%] lg:right-[4%] w-[34%] max-w-[240px] z-10">
+          <PillarListRight pillar={gov} visible={showPillars} />
         </div>
 
-        {/* 2. Revenue — left of bottom-left vertex */}
-        <div className="absolute bottom-[22%] left-[1%] w-[30%] max-w-[210px] z-10">
-          <PillarBlock pillar={rev} visible={showPillars} align="right" />
+        {/* 2. Revenue — lower left of triangle */}
+        <div className="absolute bottom-[26%] left-[1%] lg:left-[3%] w-[34%] max-w-[240px] z-10">
+          <PillarListLeft pillar={rev} visible={showPillars} />
         </div>
 
-        {/* 3. Execution — right of bottom-right vertex */}
-        <div className="absolute bottom-[22%] right-[1%] w-[30%] max-w-[210px] z-10">
-          <PillarBlock pillar={exec} visible={showPillars} align="left" />
+        {/* 3. Execution — lower right of triangle */}
+        <div className="absolute bottom-[22%] right-[1%] lg:right-[2%] w-[34%] max-w-[250px] z-10">
+          <PillarListRight pillar={exec} visible={showPillars} />
         </div>
 
-        {/* Value creation — below triangle center */}
+        {/* Value creation */}
         <motion.div
           initial={false}
           animate={{ opacity: showValue ? 1 : 0 }}
-          transition={{ duration: 0.28 }}
-          className={`absolute bottom-[4%] left-1/2 -translate-x-1/2 z-10 flex flex-col items-center ${
+          transition={{ duration: 0.3 }}
+          className={`absolute bottom-[11%] left-1/2 -translate-x-1/2 z-10 flex flex-col items-center ${
             showValue ? '' : 'pointer-events-none'
           }`}
           aria-hidden={!showValue}
         >
-          <div className="w-px h-3 mb-0.5" style={{ backgroundColor: GOLD }} />
+          <div className="w-[2px] h-4 mb-1" style={{ backgroundColor: GOLD }} />
           <div
-            className="flex items-center gap-2.5 px-4 py-2 rounded-md border-2 bg-white shadow-sm whitespace-nowrap"
+            className="flex items-center gap-3 px-5 py-2.5 lg:py-3 rounded-lg border-2 bg-white shadow-md"
             style={{ borderColor: GOLD }}
           >
-            <BarChart3 className="w-4 h-4 shrink-0" style={{ color: GOLD }} strokeWidth={2.25} />
+            <BarChart3 className="w-5 h-5 shrink-0" style={{ color: GOLD }} strokeWidth={2.25} />
             <div className="text-center">
-              <p className="text-[8px] lg:text-[9px] font-black tracking-wider" style={{ color: GOLD }}>
+              <p className="text-[9px] lg:text-[10px] font-black tracking-wider" style={{ color: GOLD }}>
                 {valueCreation.titleEn}
               </p>
-              <p className="text-[10px] lg:text-xs font-black text-brand-blue">{valueCreation.titleAr}</p>
+              <p className="text-xs lg:text-sm font-black text-brand-blue">{valueCreation.titleAr}</p>
             </div>
           </div>
         </motion.div>
       </div>
 
-      {/* Footer — separate pills like reference */}
+      {/* Outcome cards — white boxes like reference */}
       <motion.div
         initial={false}
         animate={{ opacity: showOutcomes ? 1 : 0 }}
-        transition={{ duration: 0.28 }}
-        className={`shrink-0 flex flex-wrap justify-center gap-2 lg:gap-3 px-1 ${
+        transition={{ duration: 0.3 }}
+        className={`shrink-0 flex flex-wrap justify-center gap-2 lg:gap-3 pt-1 ${
           showOutcomes ? '' : 'pointer-events-none'
         }`}
         aria-hidden={!showOutcomes}
@@ -285,10 +289,10 @@ export function SlideTransformationTriangle({ step }: { step: number }) {
         {outcomes.map((outcome) => (
           <div
             key={outcome.ar}
-            className="flex items-center gap-1.5 px-3 py-1.5 lg:py-2 bg-slate-100/95 rounded-full border border-slate-200/80"
+            className="flex items-center gap-2 px-3 py-2 lg:px-4 lg:py-2.5 bg-white rounded-xl border border-slate-200/90 shadow-sm"
           >
-            <TriangleIcon name={outcome.icon} className="w-3.5 h-3.5 text-teal-700" />
-            <span className="text-[9px] lg:text-[10px] font-bold text-slate-600 whitespace-nowrap">
+            <TriIcon name={outcome.icon} className="w-4 h-4 text-teal-700 shrink-0" />
+            <span className="text-[10px] lg:text-xs font-bold text-slate-700 whitespace-nowrap">
               {outcome.ar}
             </span>
           </div>
