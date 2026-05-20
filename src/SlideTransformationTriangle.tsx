@@ -127,62 +127,104 @@ function PillarHeader({ pillar, align = 'left' }: { pillar: Pillar; align?: 'lef
   );
 }
 
+const TRI_VIEW = { w: 400, h: 300 };
+const TRI_TOP = { x: 200, y: 44 };
+const TRI_BL = { x: 62, y: 262 };
+const TRI_BR = { x: 338, y: 262 };
+const TRI_MID = { x: 200, y: 178 };
+const TRI_BASE_MID = { x: 200, y: 262 };
+
+function vertexStyle(x: number, y: number) {
+  return {
+    left: `${(x / TRI_VIEW.w) * 100}%`,
+    top: `${(y / TRI_VIEW.h) * 100}%`,
+    transform: 'translate(-50%, -50%)',
+  } as const;
+}
+
 function TriangleDiagram({ visible }: { visible: boolean }) {
   const { center, pillars } = CONTENT.slideTriangle;
   const gov = pillars[0];
   const rev = pillars[1];
   const exec = pillars[2];
 
-  const top = { x: 200, y: 38 };
-  const bl = { x: 58, y: 252 };
-  const br = { x: 342, y: 252 };
-  const mid = { x: 200, y: 168 };
-
   return (
     <motion.div
       initial={false}
       animate={{ opacity: visible ? 1 : 0 }}
       transition={{ duration: 0.35 }}
-      className={`relative w-full aspect-[400/290] max-h-[min(40vh,360px)] ${visible ? '' : 'pointer-events-none'}`}
+      className={`relative w-full aspect-[4/3] max-h-[min(46vh,420px)] min-h-[200px] ${visible ? '' : 'pointer-events-none'}`}
       aria-hidden={!visible}
     >
-      <svg viewBox="0 0 400 290" className="w-full h-full" aria-hidden>
+      <svg viewBox={`0 0 ${TRI_VIEW.w} ${TRI_VIEW.h}`} className="w-full h-full overflow-visible" aria-hidden>
         <defs>
           <marker id="tri-gold-arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
             <path d="M0,0 L8,4 L0,8 Z" fill={GOLD} />
           </marker>
+          <filter id="tri-vertex-shadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodOpacity="0.25" />
+          </filter>
         </defs>
-        <line x1={top.x} y1={top.y} x2={bl.x} y2={bl.y} stroke={TEAL} strokeWidth="6" strokeLinecap="round" />
-        <line x1={top.x} y1={top.y} x2={br.x} y2={br.y} stroke={ROYAL} strokeWidth="6" strokeLinecap="round" />
-        <line x1={bl.x} y1={bl.y} x2={br.x} y2={br.y} stroke={NAVY} strokeWidth="6" strokeLinecap="round" />
-        <line x1={top.x} y1={top.y + 24} x2={mid.x} y2={mid.y - 36} stroke={GOLD} strokeWidth="2" markerEnd="url(#tri-gold-arrow)" />
-        <line x1={bl.x + 18} y1={bl.y - 14} x2={mid.x - 24} y2={mid.y + 22} stroke={GOLD} strokeWidth="2" markerEnd="url(#tri-gold-arrow)" />
-        <line x1={br.x - 18} y1={br.y - 14} x2={mid.x + 24} y2={mid.y + 22} stroke={GOLD} strokeWidth="2" markerEnd="url(#tri-gold-arrow)" />
-        <circle cx={top.x} cy={top.y} r="26" fill={gov.color} />
-        <circle cx={bl.x} cy={bl.y} r="26" fill={rev.color} />
-        <circle cx={br.x} cy={br.y} r="26" fill={exec.color} />
-        <circle cx={mid.x} cy={mid.y} r="42" fill="white" stroke={GOLD} strokeWidth="3" />
+        {/* Colored sides */}
+        <line x1={TRI_TOP.x} y1={TRI_TOP.y} x2={TRI_BL.x} y2={TRI_BL.y} stroke={TEAL} strokeWidth="7" strokeLinecap="round" />
+        <line x1={TRI_TOP.x} y1={TRI_TOP.y} x2={TRI_BR.x} y2={TRI_BR.y} stroke={ROYAL} strokeWidth="7" strokeLinecap="round" />
+        <line x1={TRI_BL.x} y1={TRI_BL.y} x2={TRI_BR.x} y2={TRI_BR.y} stroke={NAVY} strokeWidth="7" strokeLinecap="round" />
+        {/* Gold arrows inward */}
+        <line
+          x1={TRI_TOP.x}
+          y1={TRI_TOP.y + 28}
+          x2={TRI_MID.x}
+          y2={TRI_MID.y - 40}
+          stroke={GOLD}
+          strokeWidth="2.5"
+          markerEnd="url(#tri-gold-arrow)"
+        />
+        <line
+          x1={TRI_BL.x + 22}
+          y1={TRI_BL.y - 18}
+          x2={TRI_MID.x - 28}
+          y2={TRI_MID.y + 24}
+          stroke={GOLD}
+          strokeWidth="2.5"
+          markerEnd="url(#tri-gold-arrow)"
+        />
+        <line
+          x1={TRI_BR.x - 22}
+          y1={TRI_BR.y - 18}
+          x2={TRI_MID.x + 28}
+          y2={TRI_MID.y + 24}
+          stroke={GOLD}
+          strokeWidth="2.5"
+          markerEnd="url(#tri-gold-arrow)"
+        />
+        {/* Connector to value box (below triangle) */}
+        <line x1={TRI_BASE_MID.x} y1={TRI_BL.y + 2} x2={TRI_BASE_MID.x} y2={TRI_VIEW.h - 4} stroke={GOLD} strokeWidth="2" />
+        {/* Vertices */}
+        <circle cx={TRI_TOP.x} cy={TRI_TOP.y} r="30" fill={gov.color} filter="url(#tri-vertex-shadow)" />
+        <circle cx={TRI_BL.x} cy={TRI_BL.y} r="30" fill={rev.color} filter="url(#tri-vertex-shadow)" />
+        <circle cx={TRI_BR.x} cy={TRI_BR.y} r="30" fill={exec.color} filter="url(#tri-vertex-shadow)" />
+        <circle cx={TRI_MID.x} cy={TRI_MID.y} r="46" fill="white" stroke={GOLD} strokeWidth="3.5" />
       </svg>
 
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute text-white" style={{ top: '1%', left: '50%', transform: 'translateX(-50%)' }}>
-          <TriIcon name={gov.vertexIcon} className="w-6 h-6 lg:w-7 lg:h-7" />
+        <div className="absolute flex items-center justify-center text-white" style={vertexStyle(TRI_TOP.x, TRI_TOP.y)}>
+          <TriIcon name={gov.vertexIcon} className="w-7 h-7 lg:w-8 lg:h-8" />
         </div>
-        <div className="absolute text-white" style={{ bottom: '6%', left: '10%' }}>
-          <TriIcon name={rev.vertexIcon} className="w-6 h-6 lg:w-7 lg:h-7" />
+        <div className="absolute flex items-center justify-center text-white" style={vertexStyle(TRI_BL.x, TRI_BL.y)}>
+          <TriIcon name={rev.vertexIcon} className="w-7 h-7 lg:w-8 lg:h-8" />
         </div>
-        <div className="absolute text-white" style={{ bottom: '6%', right: '10%' }}>
-          <TriIcon name={exec.vertexIcon} className="w-6 h-6 lg:w-7 lg:h-7" />
+        <div className="absolute flex items-center justify-center text-white" style={vertexStyle(TRI_BR.x, TRI_BR.y)}>
+          <TriIcon name={exec.vertexIcon} className="w-7 h-7 lg:w-8 lg:h-8" />
         </div>
         <div
-          className="absolute flex flex-col items-center text-center"
-          style={{ top: '52%', left: '50%', transform: 'translate(-50%, -50%)' }}
+          className="absolute flex flex-col items-center justify-center text-center w-[42%] max-w-[180px]"
+          style={vertexStyle(TRI_MID.x, TRI_MID.y)}
         >
-          <DollarSign className="w-8 h-8 lg:w-9 lg:h-9" style={{ color: GOLD }} strokeWidth={2.25} />
-          <p className="text-[8px] lg:text-[9px] font-black tracking-wider mt-1" style={{ color: GOLD }}>
+          <DollarSign className="w-9 h-9 lg:w-10 lg:h-10" style={{ color: GOLD }} strokeWidth={2.25} />
+          <p className="text-[8px] lg:text-[9px] font-black tracking-wider mt-1 leading-tight" style={{ color: GOLD }}>
             {center.titleEn}
           </p>
-          <p className="text-[10px] lg:text-[11px] font-black text-brand-blue">{center.titleAr}</p>
+          <p className="text-[10px] lg:text-[11px] font-black text-brand-blue leading-tight">{center.titleAr}</p>
         </div>
       </div>
     </motion.div>
@@ -215,23 +257,23 @@ export function SlideTransformationTriangle({ step }: { step: number }) {
 
       {/* Three columns — no overlap */}
       <div
-        className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[1fr_minmax(260px,1.15fr)_1fr] gap-4 lg:gap-6 items-stretch"
+        className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(280px,1.35fr)_minmax(0,1fr)] gap-4 lg:gap-5 items-stretch"
         dir="ltr"
       >
         <div className="hidden lg:flex flex-col justify-center min-h-0 py-2">
           <PillarListLeft pillar={rev} visible={showPillars} />
         </div>
 
-        <div className="flex flex-col items-center justify-center min-h-0 gap-2 py-1">
+        <div className="flex flex-col items-center justify-center min-h-0 gap-0 py-1">
           <TriangleDiagram visible={showDiagram} />
           <motion.div
             initial={false}
             animate={{ opacity: showValue ? 1 : 0 }}
             transition={{ duration: 0.3 }}
-            className={`flex flex-col items-center shrink-0 ${showValue ? '' : 'pointer-events-none'}`}
+            className={`flex flex-col items-center shrink-0 -mt-1 ${showValue ? '' : 'pointer-events-none'}`}
             aria-hidden={!showValue}
           >
-            <div className="w-[2px] h-3 mb-1" style={{ backgroundColor: GOLD }} />
+            <div className="w-[2px] h-2 mb-1" style={{ backgroundColor: GOLD }} />
             <div
               className="flex items-center gap-3 px-5 py-2.5 rounded-lg border-2 bg-white shadow-sm"
               style={{ borderColor: GOLD }}

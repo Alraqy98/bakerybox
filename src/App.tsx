@@ -86,7 +86,7 @@ export default function App() {
     switch (slideId) {
       case 'slideIntroLogo': return 0;
       case 'hero': return 0;
-      case 'slideDsRent': return 9;
+      case 'slideDsRent': return 4;
       case 'slideDiscovery': return 4;
       case 'slideConcept': return 0;
       case 'slideTriangle': return 4;
@@ -388,12 +388,13 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
         {/* Bullets — 2-column grid to fit without crowding */}
         <div className="lg:col-span-7 min-h-0 order-2 lg:order-none">
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4 list-none m-0 p-0 h-full content-start">
-            {points.map((point, i) => {
-              if (step < bulletStartStep + i) return null;
-              return (
+            {step >= bulletStartStep &&
+              points.map((point, i) => (
                 <motion.li
                   key={point}
-                  {...fadeIn}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1, duration: 0.32, ease: 'easeOut' }}
                   className="flex items-center gap-3 min-h-[72px] lg:min-h-[88px] p-4 lg:p-5 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-md"
                 >
                   <span className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-brand-orange shrink-0" />
@@ -401,13 +402,12 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
                     {point}
                   </span>
                 </motion.li>
-              );
-            })}
+              ))}
           </ul>
         </div>
       </div>
 
-      {step >= 9 && (
+      {step >= 4 && (
         <motion.div
           {...fadeIn}
           className="shrink-0 w-full py-5 lg:py-7 px-5 lg:px-8 bg-brand-blue text-white rounded-xl lg:rounded-2xl shadow-lg"
