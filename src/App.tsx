@@ -327,17 +327,17 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
   return (
     <div className="presentation-slide flex flex-col gap-4 lg:gap-5 overflow-hidden">
       <div className="shrink-0 border-b-2 border-slate-100 pb-3 lg:pb-4">
-        <p className="text-[10px] lg:text-xs font-black text-brand-orange uppercase tracking-[0.35em] mb-1.5">
+        <p className="text-xs lg:text-sm font-black text-brand-orange uppercase tracking-[0.35em] mb-1.5">
           {titleEn}
         </p>
-        <h2 className="text-xl md:text-2xl lg:text-4xl font-black text-brand-blue leading-tight italic">
+        <h2 className="text-2xl md:text-3xl lg:text-[2.75rem] font-black text-brand-blue leading-tight italic">
           {titleAr}
         </h2>
       </div>
 
       <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-start">
-        {/* Brand sidebar — fixed sizes, no flex-grow (RTL: appears on the right) */}
-        <div className="lg:col-span-5 flex flex-col gap-3 order-1 lg:order-none shrink-0">
+        {/* Brand sidebar — logo size unchanged (RTL: appears on the right) */}
+        <div className="lg:col-span-5 flex flex-col gap-4 order-1 lg:order-none shrink-0">
           {step >= 1 && (
             <motion.div
               {...fadeIn}
@@ -357,21 +357,21 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
           )}
 
           {step >= 2 && (
-            <motion.div {...fadeIn} className="grid grid-cols-3 gap-2 shrink-0">
+            <motion.div {...fadeIn} className="grid grid-cols-3 gap-3 lg:gap-4 shrink-0">
               {services.map((service) => {
                 const Icon = DS_RENT_SERVICE_ICONS[service.icon] ?? Layers;
                 return (
                   <div
                     key={service.label}
-                    className="flex flex-col items-center gap-1 p-2.5 lg:p-3 bg-white rounded-lg lg:rounded-xl border border-slate-100 shadow-sm text-center"
+                    className="flex flex-col items-center justify-center gap-2 lg:gap-2.5 min-h-[100px] lg:min-h-[120px] p-4 lg:p-5 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-md text-center"
                   >
-                    <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg bg-[#dbeafe] flex items-center justify-center text-brand-blue">
-                      <Icon size={18} className="lg:w-5 lg:h-5" strokeWidth={2.25} />
+                    <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-[#dbeafe] flex items-center justify-center text-brand-blue">
+                      <Icon size={24} className="lg:w-7 lg:h-7" strokeWidth={2.25} />
                     </div>
-                    <span className="text-[10px] lg:text-xs font-black text-brand-blue leading-tight">
+                    <span className="text-sm lg:text-base font-black text-brand-blue leading-tight">
                       {service.label}
                     </span>
-                    <span className="text-[8px] lg:text-[9px] font-bold text-slate-400 uppercase tracking-wide">
+                    <span className="text-[10px] lg:text-xs font-bold text-slate-400 uppercase tracking-wide">
                       {service.labelEn}
                     </span>
                   </div>
@@ -383,17 +383,17 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
 
         {/* Bullets — 2-column grid to fit without crowding */}
         <div className="lg:col-span-7 min-h-0 order-2 lg:order-none">
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 lg:gap-2.5 list-none m-0 p-0">
+          <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4 list-none m-0 p-0 h-full content-start">
             {points.map((point, i) => {
               if (step < bulletStartStep + i) return null;
               return (
                 <motion.li
                   key={point}
                   {...fadeIn}
-                  className="flex items-start gap-2.5 p-3 lg:p-3.5 bg-white rounded-lg lg:rounded-xl border border-slate-100 shadow-sm"
+                  className="flex items-center gap-3 min-h-[72px] lg:min-h-[88px] p-4 lg:p-5 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-md"
                 >
-                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-brand-orange shrink-0" />
-                  <span className="text-sm lg:text-base font-bold text-slate-700 leading-snug">
+                  <span className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-brand-orange shrink-0" />
+                  <span className="text-base lg:text-lg font-bold text-slate-700 leading-snug">
                     {point}
                   </span>
                 </motion.li>
@@ -406,9 +406,9 @@ const SlideDsRentUnderstanding = ({ step }: { step: number }) => {
       {step >= 9 && (
         <motion.div
           {...fadeIn}
-          className="shrink-0 p-4 lg:p-5 bg-brand-blue text-white rounded-xl lg:rounded-2xl shadow-lg"
+          className="shrink-0 w-full py-5 lg:py-7 px-5 lg:px-8 bg-brand-blue text-white rounded-xl lg:rounded-2xl shadow-lg"
         >
-          <p className="text-sm lg:text-base font-bold leading-relaxed italic text-center lg:text-right">
+          <p className="text-base lg:text-xl font-bold leading-relaxed italic text-center lg:text-right">
             {footer}
           </p>
         </motion.div>
