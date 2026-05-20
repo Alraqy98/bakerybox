@@ -4,6 +4,30 @@
  */
 
 export const CONTENT = {
+  slideDsRent: {
+    titleEn: "Our Understanding of DS Rent",
+    titleAr: "فهمنا الأولي لطبيعة أعمال دار المركبة",
+    logoSrc: "/ds-rent-logo.png",
+    logoAlt: "دار المركبة | DS Rent",
+    services: [
+      { label: "أفراد", labelEn: "Individuals", icon: "users" },
+      { label: "شركات", labelEn: "Corporate", icon: "briefcase" },
+      { label: "حكومي", labelEn: "Government", icon: "landmark" },
+      { label: "أسطول", labelEn: "Fleet", icon: "car" },
+      { label: "فروع", labelEn: "Branches", icon: "mapPin" },
+      { label: "تشغيل", labelEn: "Operations", icon: "layers" }
+    ],
+    points: [
+      "تأسست عام 2009",
+      "أكثر من 3000 سيارة",
+      "خدمات للأفراد والشركات والقطاع الحكومي",
+      "تشغيل متعدد الفروع والخدمات",
+      "خدمات تشغيلية وموسمية متنوعة",
+      "نموذج أعمال يعتمد على إدارة وتشغيل أسطول متعدد الاستخدامات"
+    ],
+    footer:
+      "هذا النوع من الشركات يعتمد بشكل كبير على وضوح الرؤية التشغيلية وسرعة التنفيذ وكفاءة إدارة العمليات المتعددة."
+  },
   hero: {
     title: "نقطة تحول | 90x90",
     tagline: "بين الإمكانات ... والنتائج",
