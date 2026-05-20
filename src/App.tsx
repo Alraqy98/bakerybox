@@ -1292,9 +1292,6 @@ const SlideOutcomes = ({ step }: { step: number }) => {
   const [arabicTitle, englishTitle] = CONTENT.slide7.title.split(' (');
   const { result } = useAssessment();
   const raiInitial = result?.raiScore ?? null;
-  const revenueInitial = result?.revenueScore ?? null;
-  const valueGapPct =
-    revenueInitial != null ? Math.max(0, 100 - revenueInitial) : null;
 
   const formatPct = (value: number | null, placeholder: string) =>
     value != null ? `%${value}` : placeholder;
@@ -1308,7 +1305,10 @@ const SlideOutcomes = ({ step }: { step: number }) => {
       
       <div className="pdf-print-outcomes-body flex flex-col gap-6 lg:gap-10 items-center justify-center h-[calc(100%-100px)] max-w-6xl mx-auto py-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-12 w-full">
-          {CONTENT.slide7.outcomes.map((o, i) => (
+          {CONTENT.slide7.outcomes.map((o, i) => {
+            const gapsOutcome = 'columns' in o ? o : null;
+
+            return (
             <motion.div 
               key={i}
               initial={{ opacity: 0, scale: 0.9, y: 30 }}
@@ -1318,29 +1318,58 @@ const SlideOutcomes = ({ step }: { step: number }) => {
             >
               <div className={`absolute top-0 right-0 w-2 h-full ${i === 0 ? 'bg-brand-blue' : 'bg-brand-orange'} opacity-20`}></div>
               
-              <div className="space-y-6 relative z-10">
-                 <div className="flex items-center gap-4">
-                   {i === 0 ? <Activity size={40} className="text-brand-blue" /> : <BarChart3 size={40} className="text-brand-orange" />}
-                   <h3 className={`text-2xl lg:text-4xl font-black italic leading-tight ${i === 0 ? 'text-brand-blue' : 'text-brand-orange'}`}>{o.title}</h3>
+              <div className="space-y-4 lg:space-y-6 relative z-10 flex-grow flex flex-col">
+                 <div className="flex items-center gap-4 text-right">
+                   {i === 0 ? <Activity size={40} className="text-brand-blue shrink-0" /> : <BarChart3 size={40} className="text-brand-orange shrink-0" />}
+                   <h3 className={`text-xl lg:text-3xl font-black italic leading-tight ${i === 0 ? 'text-brand-blue' : 'text-brand-orange'}`}>{o.title}</h3>
                  </div>
-                 <p className="text-xs lg:text-lg font-black font-mono text-slate-400 tracking-widest italic">{o.eng}</p>
-                 <div className="flex items-baseline gap-2 flex-wrap">
-                   <p className={`text-base lg:text-2xl font-bold italic leading-relaxed ${i === 1 ? 'text-green-600' : 'text-slate-600'}`}>{o.desc}</p>
-                   {i === 1 && (
-                     <span className="text-base lg:text-2xl text-green-500 font-black italic">
-                       {valueGapPct != null ? `%${valueGapPct}` : '—'}
-                     </span>
-                   )}
-                 </div>
+
+                 {gapsOutcome ? (
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 flex-grow" dir="ltr">
+                     {gapsOutcome.columns.map((col, colIdx) => (
+                       <div
+                         key={col.labelEn}
+                         className={`flex flex-col rounded-[1.75rem] lg:rounded-[2.25rem] border-2 px-4 py-6 lg:px-6 lg:py-8 text-center ${
+                           colIdx === 0
+                             ? 'border-brand-blue/25 bg-white'
+                             : 'border-brand-orange/25 bg-white'
+                         }`}
+                       >
+                         <h4 className="text-lg lg:text-2xl font-black tracking-[0.15em] text-teal-700 italic">
+                           {col.labelEn}
+                         </h4>
+                         <p className="text-sm lg:text-base font-bold text-teal-600/90 mt-1 mb-5 lg:mb-6">
+                           ({col.labelAr})
+                         </p>
+                         <ul className="space-y-4 lg:space-y-5 flex-grow flex flex-col justify-center">
+                           {col.focuses.map((focus) => (
+                             <li key={focus.en} className="space-y-0.5">
+                               <p className="text-xs lg:text-sm font-black tracking-wider text-brand-blue uppercase leading-tight">
+                                 {focus.en}
+                               </p>
+                               <p className="text-sm lg:text-base font-black text-slate-800 leading-snug">
+                                 {focus.ar}
+                               </p>
+                             </li>
+                           ))}
+                         </ul>
+                       </div>
+                     ))}
+                   </div>
+                 ) : (
+                   <>
+                     <p className="text-xs lg:text-lg font-black font-mono text-slate-400 tracking-widest italic">{o.eng}</p>
+                     <p className="text-base lg:text-2xl font-bold italic leading-relaxed text-slate-600">{o.desc}</p>
+                   </>
+                 )}
               </div>
-               
+
+              {!gapsOutcome && (
               <div className="mt-8 flex items-center justify-between gap-6 border-t-2 border-slate-50 pt-8 relative z-10">
                 <div className="text-center bg-red-50 p-4 rounded-3xl flex-1">
                   <span className="text-[10px] lg:text-xs text-slate-400 font-black uppercase tracking-widest block mb-2 leading-none">Initial Assessment</span>
                   <span className="text-2xl lg:text-4xl font-black italic text-[#ff0000] leading-none">
-                    {i === 0
-                      ? formatPct(raiInitial, '—')
-                      : formatPct(revenueInitial, '—')}
+                    {formatPct(raiInitial, '—')}
                   </span>
                 </div>
                 <div className="text-center bg-slate-50 p-4 rounded-3xl flex-1">
@@ -1348,8 +1377,10 @@ const SlideOutcomes = ({ step }: { step: number }) => {
                   <span className="text-2xl lg:text-4xl font-black italic text-green-500 leading-none">%xx</span>
                 </div>
               </div>
+              )}
             </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

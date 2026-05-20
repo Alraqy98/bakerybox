@@ -303,7 +303,31 @@ export const CONTENT = {
     title: "المخرجات الرئيسية للتشخيص المعمق (Deep Dive Outcomes)",
     outcomes: [
       { title: "أولاً: مستوى جاهزية الحوكمة التشغيلية", eng: "(Operational Governance Readiness Score™)", desc: "وهو قياس مستوى الجاهزية التشغيلية والإدارية الفعلية داخل الشركة." },
-      { title: "ثانياً: تحليل الايرادات يتبعها تحديد القيمة المالية", eng: "(Quantified Value Gap™)", desc: "Value Gap = Achievable Business Potential - Current performance" }
+      {
+        title: "ثانيا: تحليل تفصيلي لتحديد الفجوات والفرص",
+        eng: "(Gaps & Opportunities Deep Analysis)",
+        columns: [
+          {
+            labelEn: "FOUNDATION",
+            labelAr: "بناء الأساس",
+            focuses: [
+              { en: "ROOT CAUSES", ar: "الأسباب الجذرية" },
+              { en: "LEAKAGE", ar: "تسرب القيمة" },
+              { en: "VALUE GAP", ar: "فجوة القيمة" }
+            ]
+          },
+          {
+            labelEn: "ACCELERATION",
+            labelAr: "تسريع النمو",
+            focuses: [
+              { en: "OPTIMIZATION", ar: "تحسين الأداء" },
+              { en: "SCALABILITY", ar: "قابلية التوسع" },
+              { en: "PROFITABILITY", ar: "تعزيز الربحية" },
+              { en: "EXECUTIVE VISIBILITY", ar: "الرؤية التنفيذية" }
+            ]
+          }
+        ]
+      }
     ]
   },
   slide8: {
