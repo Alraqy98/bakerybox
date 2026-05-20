@@ -55,12 +55,11 @@ const SLIDES = [
   'hero',
   'slideDsRent',
   'slideDiscovery',
-  'slideConcept',
-  'slideTriangle',
   'slide3',
   'slide4',
   'slide2',
   'slideGap',
+  'slideTriangle',
   'slide8',
   'slideTimeline',
   'slide5',
@@ -88,7 +87,6 @@ export default function App() {
       case 'hero': return 0;
       case 'slideDsRent': return 4;
       case 'slideDiscovery': return 4;
-      case 'slideConcept': return 0;
       case 'slideTriangle': return 4;
       case 'slide2': return 3;
       case 'slide3': return 3;
@@ -279,7 +277,6 @@ function renderSlide(index: number, step: number) {
     case 'hero': return <SlideHero step={step} />;
     case 'slideDsRent': return <SlideDsRentUnderstanding step={step} />;
     case 'slideDiscovery': return <SlideExecutiveDiscovery step={step} />;
-    case 'slideConcept': return <SlideConcept step={step} />;
     case 'slideTriangle': return <SlideTransformationTriangle step={step} />;
     case 'slide2': return <SlideProblem step={step} />;
     case 'slide3': return <SlideBuild step={step} />;
