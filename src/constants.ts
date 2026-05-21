@@ -87,21 +87,6 @@ export const CONTENT = {
       }
     ]
   },
-  slide11: {
-    title: "الخلاصة (Final Message)",
-    tagline: "نقطة تحول | 90x90",
-    statement: "ليس تقريراً... بل تنفيذ",
-    pillars: [
-      {
-        arabic: "لا نقدّم استشارة... بل نحدّد الفجوة، نقيسها، ونفعّلها",
-        english: "We don't deliver advice — we identify, measure and activate the gap"
-      },
-      {
-        arabic: "القيمة موجودة داخل أعمالكم... ودورنا هو تفعيلها",
-        english: "The value exists within your business — our role is to activate it"
-      }
-    ]
-  },
   thanks: {
     title: "شكراً لكم",
     subtitle: "نتطلع للعمل معكم نحو تحقيق قصة تحول ناجحة استثنائية",

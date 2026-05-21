@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowLeft,
   ArrowRight,
-  Zap,
   Eye,
   Lightbulb,
   Rocket,
@@ -18,7 +17,6 @@ import {
   BarChart3,
   Route,
   CheckCircle2,
-  Quote,
 } from 'lucide-react';
 import { CONTENT } from './constants';
 
@@ -29,7 +27,6 @@ const SLIDES = [
   'slideOpportunities',
   'slideImpact',
   'slideRoadmap',
-  'slide11',
   'thanks',
 ] as const;
 
@@ -42,7 +39,6 @@ const SLIDE_STEPS: Record<SlideId, number> = {
   slideOpportunities: 4,
   slideImpact: 4,
   slideRoadmap: 2,
-  slide11: 2,
   thanks: 0,
 };
 
@@ -205,8 +201,6 @@ function renderSlide(index: number, step: number) {
       return <SlideImpact step={step} />;
     case 'slideRoadmap':
       return <SlideRoadmap step={step} />;
-    case 'slide11':
-      return <SlidePositioning step={step} />;
     case 'thanks':
       return <SlideThanks />;
     default:
@@ -475,60 +469,6 @@ const SlideRoadmap = ({ step }: { step: number }) => {
   );
 };
 
-const SlidePositioning = ({ step }: { step: number }) => {
-  const content = CONTENT.slide11;
-  const [arabicTitle, englishTitle] = content.title.split(' (');
-
-  return (
-    <div className="presentation-slide flex flex-col items-center justify-center text-center space-y-8 lg:space-y-12 py-6 lg:py-8">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="space-y-2 lg:space-y-3"
-      >
-        <h2 className="text-2xl lg:text-5xl font-black text-brand-blue italic">{arabicTitle}</h2>
-        <p className="text-lg lg:text-2xl font-bold text-brand-blue/60 italic">({englishTitle}</p>
-        <div className="h-1 lg:h-1.5 w-20 lg:w-28 bg-brand-orange mx-auto rounded-full" />
-      </motion.div>
-
-      <div className="max-w-4xl w-full space-y-10 lg:space-y-14">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={step >= 1 ? { opacity: 1, y: 0 } : { opacity: 0 }}
-          className="space-y-3 lg:space-y-5"
-        >
-          <div className="inline-block px-8 py-2.5 bg-brand-blue rounded-xl lg:rounded-2xl shadow-lg">
-            <h3 className="text-xl lg:text-3xl font-black text-white italic">{content.tagline}</h3>
-          </div>
-          <p className="text-base lg:text-2xl font-black text-brand-blue/80 italic">{content.statement}</p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-8">
-          {content.pillars.map((pillar, i) => (
-            <motion.div
-              key={pillar.arabic}
-              initial={{ opacity: 0, x: i === 0 ? 40 : -40 }}
-              animate={step >= 2 ? { opacity: 1, x: 0 } : { opacity: 0 }}
-              transition={{ delay: i * 0.3 }}
-              className="p-6 lg:p-8 bg-white rounded-[1.5rem] lg:rounded-[2.5rem] shadow-xl border border-slate-100 flex flex-col items-center gap-5 lg:gap-6 relative group hover:border-brand-orange transition-all"
-            >
-              <div className="absolute -top-4 lg:-top-6 w-9 h-9 lg:w-14 lg:h-14 bg-brand-orange text-white rounded-lg lg:rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
-                {i === 0 ? <Zap size={24} className="lg:w-8 lg:h-8" /> : <Quote size={24} className="lg:w-8 lg:h-8" />}
-              </div>
-              <div className="space-y-3 lg:space-y-4 text-center pt-1 lg:pt-2">
-                <h4 className="text-lg lg:text-2xl font-black text-brand-blue leading-tight italic">{pillar.arabic}</h4>
-                <p className="text-[9px] lg:text-sm font-black font-mono text-slate-400 italic tracking-wider uppercase leading-relaxed">
-                  {pillar.english}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const SlideThanks = () => {
   const content = CONTENT.thanks;
   const isPdfExport =
@@ -559,61 +499,22 @@ const SlideThanks = () => {
         </motion.p>
       </div>
 
-      <div className="flex flex-col items-center justify-center gap-12 lg:gap-20 w-full max-w-7xl">
-        <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-20">
-          <motion.div
-            initial={isPdfExport ? pdfMotion.initial : { opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={isPdfExport ? pdfMotion.transition : { delay: 0.6 }}
-            className="flex flex-col items-center"
-          >
-            <div className="w-40 h-40 lg:w-72 lg:h-72 bg-white rounded-[2.5rem] lg:rounded-[4rem] shadow-2xl border border-slate-100 flex items-center justify-center overflow-hidden p-6 lg:p-12 hover:scale-105 transition-transform group">
-              <img
-                src="/logo.png"
-                alt="Roqqi Logo"
-                className="w-full h-full object-contain group-hover:rotate-3 transition-transform"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.onerror = null;
-                  target.src = 'https://ui-avatars.com/api/?name=R&background=344a92&color=fff';
-                }}
-              />
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={isPdfExport ? pdfMotion.initial : { opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={isPdfExport ? pdfMotion.transition : { delay: 1 }}
-            className="flex flex-col items-center px-8"
-          >
-            <div className={`h-0.5 w-12 bg-brand-orange/40 mb-4 ${isPdfExport ? 'block' : 'hidden lg:block'}`} />
-            <span
-              className={`thanks-contact-name text-xl md:text-2xl lg:text-4xl font-black text-brand-blue text-center whitespace-nowrap ${
-                isPdfExport ? 'not-italic tracking-normal' : 'uppercase tracking-widest italic'
-              }`}
-            >
-              {content.contact}
-            </span>
-            <div className={`h-0.5 w-12 bg-brand-orange/40 mt-4 ${isPdfExport ? 'block' : 'hidden lg:block'}`} />
-          </motion.div>
-
-          <motion.div
-            initial={isPdfExport ? pdfMotion.initial : { opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={isPdfExport ? pdfMotion.transition : { delay: 0.8 }}
-            className="flex flex-col items-center"
-          >
-            <div className="w-40 h-40 lg:w-72 lg:h-72 bg-white rounded-[2.5rem] lg:rounded-[4rem] shadow-2xl border border-slate-100 flex items-center justify-center overflow-hidden p-4 lg:p-6 hover:scale-105 transition-transform group">
-              <img
-                src="/intro-logo.png"
-                alt="نقطة تحول | 90x90 Logo"
-                className="w-full h-full object-contain group-hover:-rotate-3 transition-transform"
-              />
-            </div>
-          </motion.div>
-        </div>
-      </div>
+      <motion.div
+        initial={isPdfExport ? pdfMotion.initial : { opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={isPdfExport ? pdfMotion.transition : { delay: 0.5 }}
+        className="flex flex-col items-center gap-4 pt-4 lg:pt-8"
+      >
+        <div className="h-px w-16 bg-brand-orange/30" />
+        <span
+          className={`thanks-contact-name text-xl md:text-2xl lg:text-3xl font-semibold text-brand-blue/80 ${
+            isPdfExport ? 'not-italic' : 'italic'
+          }`}
+        >
+          {content.contact}
+        </span>
+        <div className="h-px w-16 bg-brand-orange/30" />
+      </motion.div>
     </div>
   );
 };
