@@ -136,30 +136,6 @@ export default function App() {
       <div className="fixed inset-0 grid-background opacity-30 pointer-events-none" />
       <div className="fixed -top-24 -right-24 w-[600px] h-[600px] bg-brand-blue/5 rounded-full blur-[100px] pointer-events-none" />
 
-      <AnimatePresence>
-        {SLIDES[currentSlide] === 'hero' && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: -20 }}
-            className="fixed top-8 right-8 lg:top-12 lg:right-16 z-50 pointer-events-none"
-          >
-            <div className="w-24 h-24 lg:w-40 lg:h-40 bg-white rounded-2xl lg:rounded-[3rem] shadow-2xl border border-slate-100 flex items-center justify-center overflow-hidden p-2 lg:p-4">
-              <img
-                src="/logo.png"
-                alt="Roqqi Logo"
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.onerror = null;
-                  target.src = 'https://ui-avatars.com/api/?name=R&background=344a92&color=fff';
-                }}
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <main
         className="relative flex-grow overflow-hidden cursor-pointer"
         onClick={(e) => {
@@ -250,67 +226,24 @@ function SlideHeader({ title }: { title: string }) {
 }
 
 const SlideHero = () => {
-  const descMatch = CONTENT.hero.description.match(/^(.*?)([A-Za-z].*)$/);
-  const arabicDesc = descMatch?.[1]?.trim() ?? CONTENT.hero.description;
-  const englishDesc = descMatch?.[2]?.trim() ?? '';
-  const [titleBlue, titleOrange] = CONTENT.hero.title.split(' | ');
+  const { brand, subtitle, consultant } = CONTENT.hero;
 
   return (
-    <div className="presentation-slide text-center space-y-6 lg:space-y-10">
-      <div className="space-y-2 lg:space-y-4">
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-4xl md:text-6xl lg:text-8xl font-black text-brand-blue tracking-tighter leading-[1.1] flex items-center justify-center gap-4 py-2 lg:py-4"
-        >
-          <span className="not-italic">{titleBlue}</span>
-          <div className="h-10 md:h-16 lg:h-24 w-1 bg-brand-blue/40 rounded-full mx-2 lg:mx-6" />
-          <span className="text-brand-orange italic">{titleOrange}</span>
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="text-lg md:text-xl lg:text-2xl text-brand-blue font-bold"
-        >
-          {CONTENT.hero.tagline}
-        </motion.p>
-      </div>
-
+    <div className="presentation-slide flex flex-col items-center justify-center text-center">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 50 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="max-w-4xl mx-auto p-6 md:p-8 lg:p-10 bg-white rounded-2xl lg:rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-100 relative group"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="space-y-4 lg:space-y-6 max-w-2xl"
       >
-        <div className="absolute -top-4 lg:-top-6 -right-4 lg:-right-6 w-12 h-12 lg:w-16 lg:h-16 bg-brand-orange rounded-xl lg:rounded-2xl flex items-center justify-center text-white shadow-xl">
-          <Zap size={24} className="lg:w-8 lg:h-8" />
-        </div>
-        <div className="space-y-2 mb-6 lg:mb-8">
-          <h2 className="text-2xl md:text-4xl lg:text-6xl font-black text-brand-blue leading-tight italic underline decoration-brand-orange underline-offset-8 decoration-4">
-            {arabicDesc}
-          </h2>
-          {englishDesc && (
-            <p className="text-base md:text-xl lg:text-3xl font-black text-[#5B76CC] italic mt-1 lg:mt-2 uppercase tracking-wide">
-              {englishDesc}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-col md:flex-row justify-center gap-6 lg:gap-12 pt-6 lg:pt-8 border-t border-slate-100">
-          <div className="text-center md:text-right">
-            <p className="text-lg md:text-xl lg:text-2xl font-black text-brand-blue mb-0.5">
-              {CONTENT.hero.consultant}
-            </p>
-            <p className="text-brand-blue text-[10px] md:text-sm lg:text-xl font-black leading-none">
-              {CONTENT.hero.role}
-            </p>
-            {CONTENT.hero.subrole ? (
-              <p className="text-[9px] md:text-xs lg:text-sm text-brand-orange font-black mt-1 leading-relaxed">
-                {CONTENT.hero.subrole}
-              </p>
-            ) : null}
-          </div>
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-slate-800 tracking-tight leading-tight">
+          {brand}
+        </h1>
+        <p className="text-xl md:text-2xl lg:text-3xl font-medium text-slate-500 leading-relaxed">
+          {subtitle}
+        </p>
+        <div className="pt-10 lg:pt-14">
+          <p className="text-sm text-slate-400 font-medium">{consultant}</p>
         </div>
       </motion.div>
     </div>

@@ -6,12 +6,9 @@
 
 export const CONTENT = {
   hero: {
-    title: "نقطة تحول | 90x90",
-    tagline: "بين الإمكانات ... والنتائج",
-    description: "برنامج تنفيذي لتفعيل الأداء والنمو Execution-Led Business Activation Framework",
-    consultant: "محمد ابوعيسى",
-    role: "اخصائي استشارات اعمال",
-    subrole: ""
+    brand: "Bakery Box",
+    subtitle: "ملاحظات وفرص تطوير",
+    consultant: "محمد ابوعيسى"
   },
   slideOrigin: {
     title: "من أين جاءت الفكرة؟",
