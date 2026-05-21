@@ -229,21 +229,39 @@ const SlideHero = () => {
   const { brand, subtitle, consultant } = CONTENT.hero;
 
   return (
-    <div className="presentation-slide flex flex-col items-center justify-center text-center">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="space-y-4 lg:space-y-6 max-w-2xl"
+    <div className="presentation-slide hero-cover flex items-center justify-center relative overflow-hidden">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.035] select-none flex items-center justify-center"
+        aria-hidden
       >
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-slate-800 tracking-tight leading-tight">
-          {brand}
-        </h1>
-        <p className="text-xl md:text-2xl lg:text-3xl font-medium text-slate-500 leading-relaxed">
-          {subtitle}
-        </p>
-        <div className="pt-10 lg:pt-14">
-          <p className="text-sm text-slate-400 font-medium">{consultant}</p>
+        <span className="text-[28rem] font-black text-brand-blue tracking-tighter leading-none">BB</span>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        className="relative w-full max-w-3xl mx-auto"
+      >
+        <div className="absolute -inset-px rounded-[2rem] lg:rounded-[2.75rem] bg-gradient-to-br from-amber-200/60 via-white to-brand-blue/20" />
+        <div className="relative bg-white/90 backdrop-blur-sm rounded-[2rem] lg:rounded-[2.75rem] shadow-[0_24px_80px_-20px_rgba(52,74,146,0.18)] border border-white px-10 py-14 lg:px-16 lg:py-20 text-center">
+          <div className="flex items-center justify-center gap-3 mb-10 lg:mb-12">
+            <span className="h-px w-12 lg:w-16 bg-gradient-to-l from-transparent to-amber-400/80" />
+            <span className="w-2 h-2 rounded-full bg-amber-400/90 shadow-[0_0_12px_rgba(251,191,36,0.5)]" />
+            <span className="h-px w-12 lg:w-16 bg-gradient-to-r from-transparent to-brand-blue/30" />
+          </div>
+
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-brand-blue tracking-tight leading-none mb-5 lg:mb-6">
+            {brand}
+          </h1>
+
+          <p className="text-2xl md:text-3xl lg:text-[2.125rem] font-bold text-brand-blue/75 leading-relaxed max-w-xl mx-auto">
+            {subtitle}
+          </p>
+
+          <div className="mt-10 lg:mt-12 pt-8 lg:pt-10 border-t border-slate-100/90">
+            <p className="text-base lg:text-lg font-semibold text-slate-600 tracking-wide">{consultant}</p>
+          </div>
         </div>
       </motion.div>
     </div>
