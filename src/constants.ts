@@ -9,9 +9,9 @@ export const CONTENT = {
     title: "نقطة تحول | 90x90",
     tagline: "بين الإمكانات ... والنتائج",
     description: "برنامج تنفيذي لتفعيل الأداء والنمو Execution-Led Business Activation Framework",
-    consultant: "م. رائد أبوعيسى",
-    role: "مستشار الحوكمة التشغيلية و نمو الاعمال",
-    subrole: "Operational Governance and Business Growth Consultant"
+    consultant: "محمد ابوعيسى",
+    role: "اخصائي استشارات اعمال",
+    subrole: ""
   },
   slideOrigin: {
     title: "من أين جاءت الفكرة؟",

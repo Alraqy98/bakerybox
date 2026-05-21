@@ -293,12 +293,14 @@ const SlideHero = () => {
             <p className="text-lg md:text-xl lg:text-2xl font-black text-brand-blue mb-0.5">
               {CONTENT.hero.consultant}
             </p>
-            <p className="text-brand-blue text-[10px] md:text-sm lg:text-xl font-black uppercase tracking-widest leading-none">
+            <p className="text-brand-blue text-[10px] md:text-sm lg:text-xl font-black leading-none">
               {CONTENT.hero.role}
             </p>
-            <p className="text-[9px] md:text-xs lg:text-sm text-brand-orange font-black mt-1 leading-relaxed">
-              {CONTENT.hero.subrole}
-            </p>
+            {CONTENT.hero.subrole ? (
+              <p className="text-[9px] md:text-xs lg:text-sm text-brand-orange font-black mt-1 leading-relaxed">
+                {CONTENT.hero.subrole}
+              </p>
+            ) : null}
           </div>
         </div>
       </motion.div>
