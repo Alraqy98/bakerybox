@@ -17,7 +17,6 @@ import {
   Smartphone,
   BarChart3,
   Route,
-  CheckCircle2,
   Sun,
   Users,
   MessageCircle,
@@ -42,7 +41,6 @@ const SLIDES = [
   'slideExampleB2B',
   'slideExampleHours',
   'slideMeasureImpact',
-  'slideRoadmap',
   'thanks',
 ] as const;
 
@@ -59,7 +57,6 @@ const SLIDE_STEPS: Record<SlideId, number> = {
   slideExampleB2B: 3,
   slideExampleHours: 3,
   slideMeasureImpact: 2,
-  slideRoadmap: 2,
   thanks: 0,
 };
 
@@ -230,8 +227,6 @@ function renderSlide(index: number, step: number) {
       return <SlideExampleDetail exampleKey="hours" step={step} />;
     case 'slideMeasureImpact':
       return <SlideMeasureImpact step={step} />;
-    case 'slideRoadmap':
-      return <SlideRoadmap step={step} />;
     case 'thanks':
       return <SlideThanks />;
     default:
@@ -612,71 +607,6 @@ const SlideMeasureImpact = ({ step }: { step: number }) => {
               {footer}
             </motion.p>
           </>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const SlideRoadmap = ({ step }: { step: number }) => {
-  const { title, phases } = CONTENT.slideRoadmap;
-
-  return (
-    <div className="presentation-slide flex flex-col">
-      <SlideHeader title={title} />
-      <div className="flex-1 flex flex-col justify-center gap-4 lg:gap-6 relative">
-        <div className="hidden lg:block absolute top-12 bottom-12 right-[2.25rem] w-0.5 bg-gradient-to-b from-brand-blue via-brand-orange to-emerald-600 rounded-full" />
-        {phases.map((phase, i) => (
-          <motion.div
-            key={phase.step}
-            initial={{ opacity: 0, y: 24 }}
-            animate={step >= i ? { opacity: 1, y: 0 } : { opacity: 0.12, y: 24 }}
-            transition={{ delay: i * 0.12, duration: 0.38 }}
-            className="relative flex gap-4 lg:gap-6 items-start text-right"
-          >
-            <div
-              className={`relative z-10 shrink-0 w-12 h-12 lg:w-14 lg:h-14 rounded-2xl flex items-center justify-center font-black text-lg shadow-lg ${
-                phase.paid
-                  ? 'bg-brand-orange text-white ring-4 ring-brand-orange/20'
-                  : 'bg-brand-blue text-white'
-              }`}
-            >
-              {phase.step}
-            </div>
-            <div className="flex-1 p-4 lg:p-6 bg-white rounded-2xl lg:rounded-[2rem] border border-slate-100 shadow-lg">
-              <div className="flex flex-wrap items-center gap-2 mb-2">
-                <h3 className="text-base lg:text-xl font-black text-brand-blue italic leading-tight">
-                  {phase.title}
-                </h3>
-                {phase.paid && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-brand-orange/10 text-brand-orange text-[10px] lg:text-xs font-black uppercase tracking-wider border border-brand-orange/20">
-                    مدفوع · يُخصم لاحقًا
-                  </span>
-                )}
-              </div>
-              <p className="text-sm lg:text-lg font-bold text-slate-600 leading-relaxed">{phase.description}</p>
-              {'note' in phase && phase.note && step >= i && (
-                <p className="mt-2 text-[10px] lg:text-xs font-semibold text-slate-400 italic">{phase.note}</p>
-              )}
-            </div>
-            {i < phases.length - 1 && (
-              <Route
-                size={20}
-                className="hidden lg:block absolute -bottom-3 right-5 text-slate-300"
-                aria-hidden
-              />
-            )}
-          </motion.div>
-        ))}
-        {step >= 2 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex items-center justify-center gap-2 pt-2 text-slate-400"
-          >
-            <CheckCircle2 size={16} />
-            <span className="text-xs font-black uppercase tracking-widest">تنفيذ · متابعة · استدامة</span>
-          </motion.div>
         )}
       </div>
     </div>
