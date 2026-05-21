@@ -42,9 +42,6 @@ const SLIDES = [
   'slideExampleB2B',
   'slideExampleHours',
   'slideMeasureImpact',
-  'slideImpactOps',
-  'slideImpactCommercial',
-  'slideImpactDigital',
   'slideRoadmap',
   'thanks',
 ] as const;
@@ -62,9 +59,6 @@ const SLIDE_STEPS: Record<SlideId, number> = {
   slideExampleB2B: 3,
   slideExampleHours: 3,
   slideMeasureImpact: 2,
-  slideImpactOps: 3,
-  slideImpactCommercial: 3,
-  slideImpactDigital: 5,
   slideRoadmap: 2,
   thanks: 0,
 };
@@ -236,12 +230,6 @@ function renderSlide(index: number, step: number) {
       return <SlideExampleDetail exampleKey="hours" step={step} />;
     case 'slideMeasureImpact':
       return <SlideMeasureImpact step={step} />;
-    case 'slideImpactOps':
-      return <SlideImpactCategory category="ops" step={step} />;
-    case 'slideImpactCommercial':
-      return <SlideImpactCategory category="commercial" step={step} />;
-    case 'slideImpactDigital':
-      return <SlideImpactCategory category="digital" step={step} />;
     case 'slideRoadmap':
       return <SlideRoadmap step={step} />;
     case 'thanks':
@@ -625,54 +613,6 @@ const SlideMeasureImpact = ({ step }: { step: number }) => {
             </motion.p>
           </>
         )}
-      </div>
-    </div>
-  );
-};
-
-type ImpactCategory = 'ops' | 'commercial' | 'digital';
-
-const IMPACT_CONTENT: Record<
-  ImpactCategory,
-  { key: keyof typeof CONTENT; headerClass: string }
-> = {
-  ops: { key: 'slideImpactOps', headerClass: 'bg-brand-blue' },
-  commercial: { key: 'slideImpactCommercial', headerClass: 'bg-emerald-700' },
-  digital: { key: 'slideImpactDigital', headerClass: 'bg-violet-700' },
-};
-
-const SlideImpactCategory = ({
-  category,
-  step,
-}: {
-  category: ImpactCategory;
-  step: number;
-}) => {
-  const config = IMPACT_CONTENT[category];
-  const { title, subtitle, rows } = CONTENT[config.key];
-
-  return (
-    <div className="presentation-slide flex flex-col">
-      <SlideHeader title={title} subtitle={subtitle} />
-      <div className="flex-1 flex flex-col gap-2 lg:gap-3 justify-center min-h-0">
-        {rows.map((row, i) => (
-          <motion.div
-            key={row.opportunity}
-            initial={{ opacity: 0, x: 20 }}
-            animate={step >= i ? { opacity: 1, x: 0 } : { opacity: 0.12, x: 20 }}
-            transition={{ delay: i * 0.07, duration: 0.3 }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-2 lg:gap-0 items-stretch bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-md overflow-hidden"
-          >
-            <div
-              className={`p-3 lg:p-4 text-white text-right flex items-center ${config.headerClass}`}
-            >
-              <span className="text-sm lg:text-lg font-black italic leading-snug">{row.opportunity}</span>
-            </div>
-            <div className="p-3 lg:p-4 bg-slate-50 text-right flex items-center border-t md:border-t-0 md:border-r border-slate-100">
-              <span className="text-xs lg:text-base font-bold text-slate-600 leading-snug">{row.impact}</span>
-            </div>
-          </motion.div>
-        ))}
       </div>
     </div>
   );
