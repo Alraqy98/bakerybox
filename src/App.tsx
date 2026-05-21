@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowLeft,
   ArrowRight,
+  Zap,
   Eye,
   Lightbulb,
   Rocket,
