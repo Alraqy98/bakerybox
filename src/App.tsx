@@ -33,7 +33,9 @@ const SLIDES = [
   'slideOpportunitiesOps',
   'slideOpportunitiesCommercial',
   'slideOpportunitiesDigital',
-  'slideImpact',
+  'slideImpactOps',
+  'slideImpactCommercial',
+  'slideImpactDigital',
   'slideRoadmap',
   'thanks',
 ] as const;
@@ -47,7 +49,9 @@ const SLIDE_STEPS: Record<SlideId, number> = {
   slideOpportunitiesOps: 3,
   slideOpportunitiesCommercial: 3,
   slideOpportunitiesDigital: 3,
-  slideImpact: 4,
+  slideImpactOps: 3,
+  slideImpactCommercial: 3,
+  slideImpactDigital: 3,
   slideRoadmap: 2,
   thanks: 0,
 };
@@ -211,8 +215,12 @@ function renderSlide(index: number, step: number) {
       return <SlideOpportunityCategory category="commercial" step={step} />;
     case 'slideOpportunitiesDigital':
       return <SlideOpportunityCategory category="digital" step={step} />;
-    case 'slideImpact':
-      return <SlideImpact step={step} />;
+    case 'slideImpactOps':
+      return <SlideImpactCategory category="ops" step={step} />;
+    case 'slideImpactCommercial':
+      return <SlideImpactCategory category="commercial" step={step} />;
+    case 'slideImpactDigital':
+      return <SlideImpactCategory category="digital" step={step} />;
     case 'slideRoadmap':
       return <SlideRoadmap step={step} />;
     case 'thanks':
@@ -222,12 +230,15 @@ function renderSlide(index: number, step: number) {
   }
 }
 
-function SlideHeader({ title }: { title: string }) {
+function SlideHeader({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="shrink-0 text-right border-b-2 border-slate-100 pb-3 lg:pb-4 mb-4 lg:mb-6">
       <h2 className="text-2xl md:text-3xl lg:text-[2.75rem] font-black text-brand-blue leading-tight italic">
         {title}
       </h2>
+      {subtitle ? (
+        <p className="mt-1 text-base lg:text-xl font-bold text-slate-500">{subtitle}</p>
+      ) : null}
       <div className="mt-2 h-1 w-16 lg:w-24 bg-brand-orange rounded-full mr-0 ml-auto" />
     </div>
   );
@@ -417,12 +428,30 @@ const SlideOpportunityCategory = ({
   );
 };
 
-const SlideImpact = ({ step }: { step: number }) => {
-  const { title, rows } = CONTENT.slideImpact;
+type ImpactCategory = 'ops' | 'commercial' | 'digital';
+
+const IMPACT_CONTENT: Record<
+  ImpactCategory,
+  { key: keyof typeof CONTENT; headerClass: string }
+> = {
+  ops: { key: 'slideImpactOps', headerClass: 'bg-brand-blue' },
+  commercial: { key: 'slideImpactCommercial', headerClass: 'bg-emerald-700' },
+  digital: { key: 'slideImpactDigital', headerClass: 'bg-violet-700' },
+};
+
+const SlideImpactCategory = ({
+  category,
+  step,
+}: {
+  category: ImpactCategory;
+  step: number;
+}) => {
+  const config = IMPACT_CONTENT[category];
+  const { title, subtitle, rows } = CONTENT[config.key];
 
   return (
     <div className="presentation-slide flex flex-col">
-      <SlideHeader title={title} />
+      <SlideHeader title={title} subtitle={subtitle} />
       <div className="flex-1 flex flex-col gap-2 lg:gap-3 justify-center min-h-0">
         {rows.map((row, i) => (
           <motion.div
@@ -432,7 +461,9 @@ const SlideImpact = ({ step }: { step: number }) => {
             transition={{ delay: i * 0.07, duration: 0.3 }}
             className="grid grid-cols-1 md:grid-cols-2 gap-2 lg:gap-0 items-stretch bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-md overflow-hidden"
           >
-            <div className="p-3 lg:p-4 bg-brand-blue text-white text-right flex items-center">
+            <div
+              className={`p-3 lg:p-4 text-white text-right flex items-center ${config.headerClass}`}
+            >
               <span className="text-sm lg:text-lg font-black italic leading-snug">{row.opportunity}</span>
             </div>
             <div className="p-3 lg:p-4 bg-slate-50 text-right flex items-center border-t md:border-t-0 md:border-r border-slate-100">
