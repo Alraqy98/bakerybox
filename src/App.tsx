@@ -17,6 +17,11 @@ import {
   BarChart3,
   Route,
   CheckCircle2,
+  Sun,
+  Users,
+  MessageCircle,
+  Target,
+  Package,
 } from 'lucide-react';
 import { CONTENT } from './constants';
 
@@ -24,7 +29,9 @@ const SLIDES = [
   'hero',
   'slideOrigin',
   'slideWhyBakery',
-  'slideOpportunities',
+  'slideOpportunitiesOps',
+  'slideOpportunitiesCommercial',
+  'slideOpportunitiesDigital',
   'slideImpact',
   'slideRoadmap',
   'thanks',
@@ -36,7 +43,9 @@ const SLIDE_STEPS: Record<SlideId, number> = {
   hero: 0,
   slideOrigin: 3,
   slideWhyBakery: 3,
-  slideOpportunities: 4,
+  slideOpportunitiesOps: 3,
+  slideOpportunitiesCommercial: 3,
+  slideOpportunitiesDigital: 3,
   slideImpact: 4,
   slideRoadmap: 2,
   thanks: 0,
@@ -195,8 +204,12 @@ function renderSlide(index: number, step: number) {
       return <SlideOrigin step={step} />;
     case 'slideWhyBakery':
       return <SlideWhyBakery step={step} />;
-    case 'slideOpportunities':
-      return <SlideOpportunities step={step} />;
+    case 'slideOpportunitiesOps':
+      return <SlideOpportunityCategory category="ops" step={step} />;
+    case 'slideOpportunitiesCommercial':
+      return <SlideOpportunityCategory category="commercial" step={step} />;
+    case 'slideOpportunitiesDigital':
+      return <SlideOpportunityCategory category="digital" step={step} />;
     case 'slideImpact':
       return <SlideImpact step={step} />;
     case 'slideRoadmap':
@@ -342,32 +355,59 @@ const SlideWhyBakery = ({ step }: { step: number }) => {
   );
 };
 
-const OPP_ICONS = [Clock, Heart, Building2, Smartphone, BarChart3];
+type OpportunityCategory = 'ops' | 'commercial' | 'digital';
 
-const SlideOpportunities = ({ step }: { step: number }) => {
-  const { title, cards } = CONTENT.slideOpportunities;
+const OPPORTUNITY_CONTENT: Record<
+  OpportunityCategory,
+  { key: keyof typeof CONTENT; icons: typeof Clock[]; iconClass: string }
+> = {
+  ops: {
+    key: 'slideOpportunitiesOps',
+    icons: [Clock, Sun, Zap, Users],
+    iconClass: 'bg-brand-blue/10 text-brand-blue border-brand-blue/15',
+  },
+  commercial: {
+    key: 'slideOpportunitiesCommercial',
+    icons: [Heart, Building2, Package, TrendingUp],
+    iconClass: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+  },
+  digital: {
+    key: 'slideOpportunitiesDigital',
+    icons: [Smartphone, MessageCircle, Target, Route],
+    iconClass: 'bg-violet-50 text-violet-700 border-violet-100',
+  },
+};
+
+const SlideOpportunityCategory = ({
+  category,
+  step,
+}: {
+  category: OpportunityCategory;
+  step: number;
+}) => {
+  const config = OPPORTUNITY_CONTENT[category];
+  const { title, items } = CONTENT[config.key];
 
   return (
     <div className="presentation-slide flex flex-col">
       <SlideHeader title={title} />
-      <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 content-start">
-        {cards.map((card, i) => {
-          const Icon = OPP_ICONS[i] ?? Sparkles;
-          const isWide = i === 4;
+      <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-5 content-center">
+        {items.map((item, i) => {
+          const Icon = config.icons[i] ?? Sparkles;
           return (
             <motion.div
-              key={card}
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={step >= i ? { opacity: 1, scale: 1 } : { opacity: 0.12, scale: 0.96 }}
+              key={item}
+              initial={{ opacity: 0, y: 16 }}
+              animate={step >= i ? { opacity: 1, y: 0 } : { opacity: 0.12, y: 16 }}
               transition={{ delay: i * 0.08, duration: 0.32 }}
-              className={`flex flex-col gap-3 p-4 lg:p-6 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-md text-right hover:border-brand-orange/30 transition-colors ${
-                isWide ? 'sm:col-span-2 lg:col-span-1' : ''
-              }`}
+              className="flex items-center gap-4 p-5 lg:p-7 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-md text-right hover:shadow-lg hover:border-brand-orange/25 transition-all"
             >
-              <div className="w-10 h-10 rounded-lg bg-brand-blue/10 flex items-center justify-center text-brand-blue">
-                <Icon size={20} strokeWidth={2.25} />
+              <div
+                className={`w-11 h-11 lg:w-12 lg:h-12 rounded-xl flex items-center justify-center shrink-0 border ${config.iconClass}`}
+              >
+                <Icon size={22} strokeWidth={2.25} />
               </div>
-              <p className="text-sm lg:text-lg font-black text-slate-700 leading-snug">{card}</p>
+              <p className="text-base lg:text-xl font-black text-slate-700 leading-snug">{item}</p>
             </motion.div>
           );
         })}
