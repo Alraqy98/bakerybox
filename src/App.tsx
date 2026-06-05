@@ -33,22 +33,6 @@ const SLIDES = [
   'thanks',
 ] as const;
 
-type SlideId = (typeof SLIDES)[number];
-
-const SLIDE_STEPS: Record<SlideId, number> = {
-  hero: 0,
-  slideThirtyDayGoal: 4,
-  slideFivePillars: 4,
-  slideFootfallCr: 3,
-  slideSalesEquation: 4,
-  slideProfessionalFraming: 1,
-  slideMeasureOps: 3,
-  slideMeasureFootfall: 3,
-  slideMeasureConversion: 3,
-  slideMeasureBasket: 3,
-  thanks: 0,
-};
-
 type MeasureKey =
   | 'slideMeasureOps'
   | 'slideMeasureFootfall'
@@ -57,33 +41,15 @@ type MeasureKey =
 
 export default function App() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [currentStep, setCurrentStep] = useState(0);
   const isPdfMode =
     typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('pdf');
 
-  const getStepsForSlide = (index: number) => SLIDE_STEPS[SLIDES[index]];
-
-  const paginate = useCallback(
-    (newDirection: number) => {
-      const maxSteps = getStepsForSlide(currentSlide);
-
-      if (newDirection > 0 && currentStep < maxSteps) {
-        setCurrentStep((prev) => prev + 1);
-        return;
-      }
-      if (newDirection < 0 && currentStep > 0) {
-        setCurrentStep((prev) => prev - 1);
-        return;
-      }
-
-      const next = currentSlide + newDirection;
-      if (next >= 0 && next < SLIDES.length) {
-        setCurrentSlide(next);
-        setCurrentStep(newDirection > 0 ? 0 : getStepsForSlide(next));
-      }
-    },
-    [currentSlide, currentStep]
-  );
+  const paginate = useCallback((newDirection: number) => {
+    const next = currentSlide + newDirection;
+    if (next >= 0 && next < SLIDES.length) {
+      setCurrentSlide(next);
+    }
+  }, [currentSlide]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -102,7 +68,7 @@ export default function App() {
         {SLIDES.map((slideId, index) => (
           <section key={`${slideId}-${index}`} className="pdf-page" data-pdf-slide={slideId}>
             <div className="pdf-slide-shell">
-              <div className="pdf-scale">{renderSlide(index, getStepsForSlide(index))}</div>
+              <div className="pdf-scale">{renderSlide(index)}</div>
             </div>
           </section>
         ))}
@@ -128,7 +94,7 @@ export default function App() {
       >
         <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8">
           <div className="w-full h-full max-w-7xl flex items-center justify-center">
-            {renderSlide(currentSlide, currentStep)}
+            {renderSlide(currentSlide)}
           </div>
         </div>
       </main>
@@ -160,28 +126,28 @@ export default function App() {
   );
 }
 
-function renderSlide(index: number, step: number) {
+function renderSlide(index: number) {
   switch (SLIDES[index]) {
     case 'hero':
       return <SlideHero />;
     case 'slideThirtyDayGoal':
-      return <SlideThirtyDayGoal step={step} />;
+      return <SlideThirtyDayGoal />;
     case 'slideFivePillars':
-      return <SlideFivePillars step={step} />;
+      return <SlideFivePillars />;
     case 'slideFootfallCr':
-      return <SlideFootfallCr step={step} />;
+      return <SlideFootfallCr />;
     case 'slideSalesEquation':
-      return <SlideSalesEquation step={step} />;
+      return <SlideSalesEquation />;
     case 'slideProfessionalFraming':
-      return <SlideProfessionalFraming step={step} />;
+      return <SlideProfessionalFraming />;
     case 'slideMeasureOps':
-      return <SlideMeasureLayer measureKey="slideMeasureOps" step={step} />;
+      return <SlideMeasureLayer measureKey="slideMeasureOps" />;
     case 'slideMeasureFootfall':
-      return <SlideMeasureLayer measureKey="slideMeasureFootfall" step={step} />;
+      return <SlideMeasureLayer measureKey="slideMeasureFootfall" />;
     case 'slideMeasureConversion':
-      return <SlideMeasureLayer measureKey="slideMeasureConversion" step={step} />;
+      return <SlideMeasureLayer measureKey="slideMeasureConversion" />;
     case 'slideMeasureBasket':
-      return <SlideMeasureLayer measureKey="slideMeasureBasket" step={step} />;
+      return <SlideMeasureLayer measureKey="slideMeasureBasket" />;
     case 'thanks':
       return <SlideThanks />;
     default:
@@ -241,7 +207,7 @@ const SlideHero = () => {
   );
 };
 
-const SlideThirtyDayGoal = ({ step }: { step: number }) => {
+const SlideThirtyDayGoal = () => {
   const { title, intro, points, conclusion } = CONTENT.slideThirtyDayGoal;
 
   return (
@@ -251,32 +217,28 @@ const SlideThirtyDayGoal = ({ step }: { step: number }) => {
         {intro}
       </p>
       <ul className="flex-1 space-y-2 lg:space-y-3 list-none m-0 p-0">
-        {points.map((point, i) =>
-          step >= i ? (
-            <li
-              key={point}
-              className="flex items-start gap-3 p-4 lg:p-5 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm text-right"
-            >
-              <span className="w-7 h-7 rounded-lg bg-brand-blue/10 text-brand-blue font-black text-sm flex items-center justify-center shrink-0 mt-0.5">
-                {i + 1}
-              </span>
-              <span className="text-sm lg:text-lg font-bold text-slate-700 leading-relaxed">{point}</span>
-            </li>
-          ) : null
-        )}
+        {points.map((point, i) => (
+          <li
+            key={point}
+            className="flex items-start gap-3 p-4 lg:p-5 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm text-right"
+          >
+            <span className="w-7 h-7 rounded-lg bg-brand-blue/10 text-brand-blue font-black text-sm flex items-center justify-center shrink-0 mt-0.5">
+              {i + 1}
+            </span>
+            <span className="text-sm lg:text-lg font-bold text-slate-700 leading-relaxed">{point}</span>
+          </li>
+        ))}
       </ul>
-      {step >= 4 && (
-        <p className="mt-4 lg:mt-6 p-4 lg:p-5 rounded-xl bg-brand-blue/5 border border-brand-blue/10 text-sm lg:text-base font-semibold text-brand-blue text-right leading-relaxed">
-          {conclusion}
-        </p>
-      )}
+      <p className="mt-4 lg:mt-6 p-4 lg:p-5 rounded-xl bg-brand-blue/5 border border-brand-blue/10 text-sm lg:text-base font-semibold text-brand-blue text-right leading-relaxed">
+        {conclusion}
+      </p>
     </div>
   );
 };
 
 const PILLAR_ICONS = [Search, Gauge, Users, Monitor, BookOpen];
 
-const SlideFivePillars = ({ step }: { step: number }) => {
+const SlideFivePillars = () => {
   const { title, pillars } = CONTENT.slideFivePillars;
 
   return (
@@ -284,7 +246,6 @@ const SlideFivePillars = ({ step }: { step: number }) => {
       <SlideHeader title={title} />
       <div className="flex-1 min-h-0 grid grid-cols-1 gap-2 lg:gap-3 content-start">
         {pillars.map((pillar, i) => {
-          if (step < i) return null;
           const Icon = PILLAR_ICONS[i] ?? Activity;
           return (
             <div
@@ -306,7 +267,7 @@ const SlideFivePillars = ({ step }: { step: number }) => {
   );
 };
 
-const SlideFootfallCr = ({ step }: { step: number }) => {
+const SlideFootfallCr = () => {
   const { title, footfall, cr, formula, insights } = CONTENT.slideFootfallCr;
 
   return (
@@ -314,44 +275,39 @@ const SlideFootfallCr = ({ step }: { step: number }) => {
       <SlideHeader title={title} />
       <div className="flex-1 flex flex-col gap-3 lg:gap-4 justify-center min-h-0">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {[footfall, cr].map((item, i) =>
-            step >= i ? (
-              <div
-                key={item.label}
-                className="p-4 lg:p-5 bg-white rounded-xl border border-slate-100 shadow-sm text-right"
-              >
-                <p className="text-xs font-black text-brand-blue uppercase tracking-wide mb-1">{item.label}</p>
-                <p className="text-sm lg:text-base font-bold text-slate-600">{item.text}</p>
-              </div>
-            ) : null
-          )}
-        </div>
-
-        {step >= 2 && (
-          <div className="p-4 lg:p-5 bg-brand-blue text-white rounded-xl text-center">
-            <p className="text-xs font-bold text-white/70 mb-1">معادلة التحويل</p>
-            <p className="text-lg lg:text-2xl font-black tracking-wide" dir="ltr">
-              {formula}
-            </p>
-          </div>
-        )}
-
-        {step >= 3 &&
-          insights.map((insight) => (
+          {[footfall, cr].map((item) => (
             <div
-              key={insight.title}
-              className="p-4 lg:p-5 bg-slate-50 rounded-xl border border-slate-100 text-right"
+              key={item.label}
+              className="p-4 lg:p-5 bg-white rounded-xl border border-slate-100 shadow-sm text-right"
             >
-              <p className="text-sm lg:text-base font-black text-brand-blue mb-1">{insight.title}</p>
-              <p className="text-xs lg:text-sm font-semibold text-slate-600">{insight.text}</p>
+              <p className="text-xs font-black text-brand-blue uppercase tracking-wide mb-1">{item.label}</p>
+              <p className="text-sm lg:text-base font-bold text-slate-600">{item.text}</p>
             </div>
           ))}
+        </div>
+
+        <div className="p-4 lg:p-5 bg-brand-blue text-white rounded-xl text-center">
+          <p className="text-xs font-bold text-white/70 mb-1">معادلة التحويل</p>
+          <p className="text-lg lg:text-2xl font-black tracking-wide" dir="ltr">
+            {formula}
+          </p>
+        </div>
+
+        {insights.map((insight) => (
+          <div
+            key={insight.title}
+            className="p-4 lg:p-5 bg-slate-50 rounded-xl border border-slate-100 text-right"
+          >
+            <p className="text-sm lg:text-base font-black text-brand-blue mb-1">{insight.title}</p>
+            <p className="text-xs lg:text-sm font-semibold text-slate-600">{insight.text}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-const SlideSalesEquation = ({ step }: { step: number }) => {
+const SlideSalesEquation = () => {
   const { title, intro, factors, equation } = CONTENT.slideSalesEquation;
 
   return (
@@ -359,45 +315,39 @@ const SlideSalesEquation = ({ step }: { step: number }) => {
       <SlideHeader title={title} />
       <p className="text-base lg:text-lg font-bold text-slate-600 mb-4 text-right">{intro}</p>
       <ul className="flex-1 space-y-2 list-none m-0 p-0">
-        {factors.map((factor, i) =>
-          step >= i ? (
-            <li
-              key={factor}
-              className="flex items-center gap-3 p-3 lg:p-4 bg-white rounded-xl border border-slate-100 shadow-sm text-right"
-            >
-              <AlertCircle size={18} className="text-brand-orange shrink-0" />
-              <span className="text-sm lg:text-base font-bold text-slate-700">{factor}</span>
-            </li>
-          ) : null
-        )}
+        {factors.map((factor) => (
+          <li
+            key={factor}
+            className="flex items-center gap-3 p-3 lg:p-4 bg-white rounded-xl border border-slate-100 shadow-sm text-right"
+          >
+            <AlertCircle size={18} className="text-brand-orange shrink-0" />
+            <span className="text-sm lg:text-base font-bold text-slate-700">{factor}</span>
+          </li>
+        ))}
       </ul>
-      {step >= 4 && (
-        <div className="mt-4 p-5 lg:p-6 bg-brand-blue text-white rounded-2xl text-right shadow-lg">
-          <p className="text-xs font-bold text-white/70 mb-2">المعادلة التشغيلية</p>
-          <p className="text-base lg:text-xl font-black leading-relaxed">{equation}</p>
-        </div>
-      )}
+      <div className="mt-4 p-5 lg:p-6 bg-brand-blue text-white rounded-2xl text-right shadow-lg">
+        <p className="text-xs font-bold text-white/70 mb-2">المعادلة التشغيلية</p>
+        <p className="text-base lg:text-xl font-black leading-relaxed">{equation}</p>
+      </div>
     </div>
   );
 };
 
-const SlideProfessionalFraming = ({ step }: { step: number }) => {
+const SlideProfessionalFraming = () => {
   const { title, blocks } = CONTENT.slideProfessionalFraming;
 
   return (
     <div className="presentation-slide flex flex-col justify-center">
       <SlideHeader title={title} />
       <div className="space-y-4 lg:space-y-6">
-        {blocks.map((block, i) =>
-          step >= i ? (
-            <p
-              key={i}
-              className="text-base lg:text-xl font-semibold text-slate-600 leading-relaxed text-right p-5 lg:p-7 bg-white rounded-2xl border border-slate-100 shadow-sm"
-            >
-              {block}
-            </p>
-          ) : null
-        )}
+        {blocks.map((block, i) => (
+          <p
+            key={i}
+            className="text-base lg:text-xl font-semibold text-slate-600 leading-relaxed text-right p-5 lg:p-7 bg-white rounded-2xl border border-slate-100 shadow-sm"
+          >
+            {block}
+          </p>
+        ))}
       </div>
     </div>
   );
@@ -410,13 +360,7 @@ const MEASURE_ICONS: Record<MeasureKey, typeof ChefHat[]> = {
   slideMeasureBasket: [ShoppingCart, Package, TrendingUp, BarChart3],
 };
 
-const SlideMeasureLayer = ({
-  measureKey,
-  step,
-}: {
-  measureKey: MeasureKey;
-  step: number;
-}) => {
+const SlideMeasureLayer = ({ measureKey }: { measureKey: MeasureKey }) => {
   const data = CONTENT[measureKey];
   const icons = MEASURE_ICONS[measureKey];
   const showSubtitle = 'subtitle' in data && data.subtitle;
@@ -442,7 +386,6 @@ const SlideMeasureLayer = ({
 
       <ul className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2 lg:gap-3 list-none m-0 p-0 content-center">
         {data.items.map((item, i) => {
-          if (step < i) return null;
           const Icon = icons[i] ?? Activity;
           return (
             <li
