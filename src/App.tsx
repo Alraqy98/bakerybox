@@ -3,44 +3,34 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowLeft,
   ArrowRight,
-  Zap,
-  Eye,
-  Lightbulb,
-  Rocket,
-  TrendingUp,
-  MapPin,
   Activity,
-  Sparkles,
-  Clock,
-  Heart,
-  Building2,
-  Smartphone,
-  BarChart3,
-  Route,
-  Sun,
+  Gauge,
   Users,
-  MessageCircle,
-  Target,
+  Monitor,
+  BookOpen,
+  Search,
+  TrendingUp,
+  ShoppingCart,
   Package,
-  AlertTriangle,
-  LineChart,
-  Truck,
-  Store,
-  PackageX,
+  ChefHat,
+  Clock,
+  BarChart3,
+  Percent,
+  AlertCircle,
 } from 'lucide-react';
 import { CONTENT } from './constants';
 
 const SLIDES = [
   'hero',
-  'slideOrigin',
-  'slideWhyBakery',
-  'slideOpportunitiesOps',
-  'slideOpportunitiesCommercial',
-  'slideOpportunitiesDigital',
-  'slideExamplesIntro',
-  'slideExampleB2B',
-  'slideExampleHours',
-  'slideMeasureImpact',
+  'slideThirtyDayGoal',
+  'slideFivePillars',
+  'slideFootfallCr',
+  'slideSalesEquation',
+  'slideProfessionalFraming',
+  'slideMeasureOps',
+  'slideMeasureFootfall',
+  'slideMeasureConversion',
+  'slideMeasureBasket',
   'thanks',
 ] as const;
 
@@ -48,17 +38,23 @@ type SlideId = (typeof SLIDES)[number];
 
 const SLIDE_STEPS: Record<SlideId, number> = {
   hero: 0,
-  slideOrigin: 3,
-  slideWhyBakery: 3,
-  slideOpportunitiesOps: 3,
-  slideOpportunitiesCommercial: 3,
-  slideOpportunitiesDigital: 5,
-  slideExamplesIntro: 1,
-  slideExampleB2B: 3,
-  slideExampleHours: 3,
-  slideMeasureImpact: 2,
+  slideThirtyDayGoal: 4,
+  slideFivePillars: 4,
+  slideFootfallCr: 3,
+  slideSalesEquation: 4,
+  slideProfessionalFraming: 1,
+  slideMeasureOps: 3,
+  slideMeasureFootfall: 3,
+  slideMeasureConversion: 3,
+  slideMeasureBasket: 3,
   thanks: 0,
 };
+
+type MeasureKey =
+  | 'slideMeasureOps'
+  | 'slideMeasureFootfall'
+  | 'slideMeasureConversion'
+  | 'slideMeasureBasket';
 
 export default function App() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -209,24 +205,24 @@ function renderSlide(index: number, step: number) {
   switch (SLIDES[index]) {
     case 'hero':
       return <SlideHero />;
-    case 'slideOrigin':
-      return <SlideOrigin step={step} />;
-    case 'slideWhyBakery':
-      return <SlideWhyBakery step={step} />;
-    case 'slideOpportunitiesOps':
-      return <SlideOpportunityCategory category="ops" step={step} />;
-    case 'slideOpportunitiesCommercial':
-      return <SlideOpportunityCategory category="commercial" step={step} />;
-    case 'slideOpportunitiesDigital':
-      return <SlideOpportunityCategory category="digital" step={step} />;
-    case 'slideExamplesIntro':
-      return <SlideExamplesIntro step={step} />;
-    case 'slideExampleB2B':
-      return <SlideExampleDetail exampleKey="b2b" step={step} />;
-    case 'slideExampleHours':
-      return <SlideExampleDetail exampleKey="hours" step={step} />;
-    case 'slideMeasureImpact':
-      return <SlideMeasureImpact step={step} />;
+    case 'slideThirtyDayGoal':
+      return <SlideThirtyDayGoal step={step} />;
+    case 'slideFivePillars':
+      return <SlideFivePillars step={step} />;
+    case 'slideFootfallCr':
+      return <SlideFootfallCr step={step} />;
+    case 'slideSalesEquation':
+      return <SlideSalesEquation step={step} />;
+    case 'slideProfessionalFraming':
+      return <SlideProfessionalFraming step={step} />;
+    case 'slideMeasureOps':
+      return <SlideMeasureLayer measureKey="slideMeasureOps" step={step} />;
+    case 'slideMeasureFootfall':
+      return <SlideMeasureLayer measureKey="slideMeasureFootfall" step={step} />;
+    case 'slideMeasureConversion':
+      return <SlideMeasureLayer measureKey="slideMeasureConversion" step={step} />;
+    case 'slideMeasureBasket':
+      return <SlideMeasureLayer measureKey="slideMeasureBasket" step={step} />;
     case 'thanks':
       return <SlideThanks />;
     default:
@@ -291,266 +287,8 @@ const SlideHero = () => {
   );
 };
 
-const ORIGIN_ICONS = [Eye, Lightbulb, TrendingUp, Rocket];
-
-const SlideOrigin = ({ step }: { step: number }) => {
-  const { title, points } = CONTENT.slideOrigin;
-
-  return (
-    <div className="presentation-slide flex flex-col">
-      <SlideHeader title={title} />
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="lg:col-span-4 flex justify-center lg:justify-end"
-        >
-          <div className="relative w-36 h-36 lg:w-52 lg:h-52">
-            <div className="absolute inset-0 rounded-[2rem] bg-brand-blue/5 border border-brand-blue/10" />
-            <div className="absolute inset-4 lg:inset-6 rounded-2xl bg-white shadow-xl border border-slate-100 flex items-center justify-center">
-              <div className="flex items-center gap-2 text-brand-blue">
-                <Eye size={32} className="lg:w-10 lg:h-10 opacity-80" />
-                <Lightbulb size={28} className="lg:w-9 lg:h-9 text-brand-orange" />
-                <Rocket size={32} className="lg:w-10 lg:h-10 opacity-80" />
-              </div>
-            </div>
-          </div>
-        </motion.div>
-        <ul className="lg:col-span-8 space-y-3 lg:space-y-4 list-none m-0 p-0">
-          {points.map((point, i) => {
-            const Icon = ORIGIN_ICONS[i] ?? Sparkles;
-            return (
-              <motion.li
-                key={point}
-                initial={{ opacity: 0, x: 24 }}
-                animate={step >= i ? { opacity: 1, x: 0 } : { opacity: 0.12, x: 24 }}
-                transition={{ delay: i * 0.08, duration: 0.35 }}
-                className="flex items-center gap-4 p-4 lg:p-5 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-md text-right"
-              >
-                <div className="w-11 h-11 lg:w-12 lg:h-12 rounded-xl bg-[#dbeafe] flex items-center justify-center text-brand-blue shrink-0">
-                  <Icon size={22} strokeWidth={2.25} />
-                </div>
-                <span className="text-base lg:text-xl font-bold text-slate-700 leading-snug">{point}</span>
-              </motion.li>
-            );
-          })}
-        </ul>
-      </div>
-    </div>
-  );
-};
-
-const WHY_ICONS = [TrendingUp, MapPin, Activity, Sparkles];
-
-const SlideWhyBakery = ({ step }: { step: number }) => {
-  const { title, cards } = CONTENT.slideWhyBakery;
-
-  return (
-    <div className="presentation-slide flex flex-col">
-      <SlideHeader title={title} />
-      <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-5 content-center">
-        {cards.map((card, i) => {
-          const Icon = WHY_ICONS[i] ?? Sparkles;
-          return (
-            <motion.div
-              key={card}
-              initial={{ opacity: 0, y: 20 }}
-              animate={step >= i ? { opacity: 1, y: 0 } : { opacity: 0.12, y: 20 }}
-              transition={{ delay: i * 0.1, duration: 0.35 }}
-              className="flex flex-col gap-4 p-5 lg:p-7 bg-white rounded-2xl lg:rounded-[2rem] border border-slate-100 shadow-lg hover:border-brand-blue/20 hover:shadow-xl transition-all text-right min-h-[120px] lg:min-h-[140px]"
-            >
-              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-700">
-                <Icon size={26} strokeWidth={2.25} />
-              </div>
-              <p className="text-base lg:text-xl font-black text-brand-blue leading-snug italic">{card}</p>
-            </motion.div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
-type OpportunityCategory = 'ops' | 'commercial' | 'digital';
-
-const OPPORTUNITY_CONTENT: Record<
-  OpportunityCategory,
-  { key: keyof typeof CONTENT; icons: typeof Clock[]; iconClass: string }
-> = {
-  ops: {
-    key: 'slideOpportunitiesOps',
-    icons: [Clock, Sun, Zap, Users],
-    iconClass: 'bg-brand-blue/10 text-brand-blue border-brand-blue/15',
-  },
-  commercial: {
-    key: 'slideOpportunitiesCommercial',
-    icons: [Heart, Building2, Package, TrendingUp],
-    iconClass: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-  },
-  digital: {
-    key: 'slideOpportunitiesDigital',
-    icons: [Truck, Store, PackageX, MessageCircle, Target, Route],
-    iconClass: 'bg-violet-50 text-violet-700 border-violet-100',
-  },
-};
-
-const SlideOpportunityCategory = ({
-  category,
-  step,
-}: {
-  category: OpportunityCategory;
-  step: number;
-}) => {
-  const config = OPPORTUNITY_CONTENT[category];
-  const { title, items } = CONTENT[config.key];
-
-  return (
-    <div className="presentation-slide flex flex-col">
-      <SlideHeader title={title} />
-      <div
-        className={`flex-1 grid gap-3 lg:gap-4 content-start ${
-          items.length > 4 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2'
-        }`}
-      >
-        {items.map((item, i) => {
-          const Icon = config.icons[i] ?? Sparkles;
-          return (
-            <motion.div
-              key={item}
-              initial={{ opacity: 0, y: 16 }}
-              animate={step >= i ? { opacity: 1, y: 0 } : { opacity: 0.12, y: 16 }}
-              transition={{ delay: i * 0.08, duration: 0.32 }}
-              className="flex items-center gap-4 p-4 lg:p-5 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-md text-right hover:shadow-lg hover:border-brand-orange/25 transition-all"
-            >
-              <div
-                className={`w-11 h-11 lg:w-12 lg:h-12 rounded-xl flex items-center justify-center shrink-0 border ${config.iconClass}`}
-              >
-                <Icon size={22} strokeWidth={2.25} />
-              </div>
-              <p className="text-sm lg:text-base font-black text-slate-700 leading-snug">{item}</p>
-            </motion.div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
-const SlideExamplesIntro = ({ step }: { step: number }) => {
-  const { title, intro, disclaimer } = CONTENT.slideExamplesIntro;
-
-  return (
-    <div className="presentation-slide flex flex-col items-center justify-center text-center">
-      <div className="w-full max-w-3xl text-right">
-        <SlideHeader title={title} />
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="text-lg lg:text-2xl font-bold text-slate-600 leading-relaxed mb-6 lg:mb-8"
-        >
-          {intro}
-        </motion.p>
-        {step >= 1 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-amber-50/80 border border-amber-200/60 text-right"
-          >
-            <p className="text-sm lg:text-base font-semibold text-amber-900/80 leading-relaxed">{disclaimer}</p>
-          </motion.div>
-        )}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mt-10 lg:mt-12 flex flex-wrap justify-center gap-3"
-        >
-          <span className="px-4 py-2 rounded-full bg-white border border-slate-100 text-sm font-bold text-slate-500 shadow-sm">
-            مثال تجاري
-          </span>
-          <span className="px-4 py-2 rounded-full bg-white border border-slate-100 text-sm font-bold text-slate-500 shadow-sm">
-            مثال تشغيلي
-          </span>
-          <span className="px-4 py-2 rounded-full bg-white border border-slate-100 text-sm font-bold text-slate-500 shadow-sm">
-            توصيل / Trendyol
-          </span>
-        </motion.div>
-      </div>
-    </div>
-  );
-};
-
-type ExampleKey = 'b2b' | 'hours';
-
-const EXAMPLE_CONTENT: Record<ExampleKey, keyof typeof CONTENT> = {
-  b2b: 'slideExampleB2B',
-  hours: 'slideExampleHours',
-};
-
-const SlideExampleDetail = ({ exampleKey, step }: { exampleKey: ExampleKey; step: number }) => {
-  const data = CONTENT[EXAMPLE_CONTENT[exampleKey]];
-  const isRisk = (label: string) => label.includes('حذر');
-
-  return (
-    <div className="presentation-slide flex flex-col overflow-hidden">
-      <div className="shrink-0 text-right border-b-2 border-slate-100 pb-3 lg:pb-4 mb-3 lg:mb-4">
-        <span className="text-[10px] lg:text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">
-          {data.exampleLabel}
-        </span>
-        <h2 className="text-xl md:text-2xl lg:text-[2.25rem] font-black text-brand-blue leading-tight">
-          {data.title}
-        </h2>
-        <div className="mt-2 h-1 w-16 lg:w-24 bg-brand-orange rounded-full mr-0 ml-auto" />
-      </div>
-
-      <div className="flex-1 min-h-0 flex flex-col gap-2 lg:gap-3 justify-center">
-        {data.sections.map((section, i) => {
-          const visible = step >= i;
-          const risk = isRisk(section.label);
-          return (
-            <motion.div
-              key={section.label}
-              initial={{ opacity: 0, x: 16 }}
-              animate={visible ? { opacity: 1, x: 0 } : { opacity: 0.1, x: 16 }}
-              transition={{ delay: i * 0.06, duration: 0.3 }}
-              className={`p-4 lg:p-5 rounded-xl lg:rounded-2xl border text-right ${
-                risk
-                  ? 'bg-amber-50/90 border-amber-200/70'
-                  : 'bg-white border-slate-100 shadow-sm'
-              }`}
-            >
-              <div className="flex items-center gap-2 mb-1.5">
-                {risk ? (
-                  <AlertTriangle size={16} className="text-amber-700 shrink-0" />
-                ) : null}
-                <p
-                  className={`text-xs lg:text-sm font-black uppercase tracking-wide ${
-                    risk ? 'text-amber-800' : 'text-brand-blue'
-                  }`}
-                >
-                  {section.label}
-                </p>
-              </div>
-              <p
-                className={`text-sm lg:text-base font-bold leading-relaxed ${
-                  risk ? 'text-amber-900/90' : 'text-slate-600'
-                }`}
-              >
-                {section.text}
-              </p>
-            </motion.div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
-const SlideMeasureImpact = ({ step }: { step: number }) => {
-  const { title, intro, metrics, footer } = CONTENT.slideMeasureImpact;
-  const firstBatch = metrics.slice(0, 3);
-  const secondBatch = metrics.slice(3);
+const SlideThirtyDayGoal = ({ step }: { step: number }) => {
+  const { title, intro, points, conclusion } = CONTENT.slideThirtyDayGoal;
 
   return (
     <div className="presentation-slide flex flex-col">
@@ -558,57 +296,244 @@ const SlideMeasureImpact = ({ step }: { step: number }) => {
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="text-base lg:text-lg font-bold text-slate-500 mb-4 lg:mb-6 text-right leading-relaxed"
+        className="text-base lg:text-xl font-bold text-slate-600 mb-4 lg:mb-6 text-right leading-relaxed"
       >
         {intro}
       </motion.p>
+      <ul className="flex-1 space-y-2 lg:space-y-3 list-none m-0 p-0">
+        {points.map((point, i) => (
+          <motion.li
+            key={point}
+            initial={{ opacity: 0, x: 20 }}
+            animate={step >= i ? { opacity: 1, x: 0 } : { opacity: 0.1, x: 20 }}
+            transition={{ delay: i * 0.08 }}
+            className="flex items-start gap-3 p-4 lg:p-5 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm text-right"
+          >
+            <span className="w-7 h-7 rounded-lg bg-brand-blue/10 text-brand-blue font-black text-sm flex items-center justify-center shrink-0 mt-0.5">
+              {i + 1}
+            </span>
+            <span className="text-sm lg:text-lg font-bold text-slate-700 leading-relaxed">{point}</span>
+          </motion.li>
+        ))}
+      </ul>
+      {step >= 4 && (
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-4 lg:mt-6 p-4 lg:p-5 rounded-xl bg-brand-blue/5 border border-brand-blue/10 text-sm lg:text-base font-semibold text-brand-blue text-right leading-relaxed"
+        >
+          {conclusion}
+        </motion.p>
+      )}
+    </div>
+  );
+};
 
-      <div className="flex-1 flex flex-col gap-4 lg:gap-5 justify-center min-h-0">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 lg:gap-3">
-          {firstBatch.map((metric, i) => (
+const PILLAR_ICONS = [Search, Gauge, Users, Monitor, BookOpen];
+
+const SlideFivePillars = ({ step }: { step: number }) => {
+  const { title, pillars } = CONTENT.slideFivePillars;
+
+  return (
+    <div className="presentation-slide flex flex-col overflow-hidden">
+      <SlideHeader title={title} />
+      <div className="flex-1 min-h-0 grid grid-cols-1 gap-2 lg:gap-3 content-start">
+        {pillars.map((pillar, i) => {
+          const Icon = PILLAR_ICONS[i] ?? Activity;
+          return (
             <motion.div
-              key={metric}
-              initial={{ opacity: 0, y: 12 }}
-              animate={step >= 0 ? { opacity: 1, y: 0 } : { opacity: 0.12, y: 12 }}
-              transition={{ delay: i * 0.08 }}
-              className="flex items-center gap-3 p-4 lg:p-5 bg-white rounded-xl border border-slate-100 shadow-sm text-right"
+              key={pillar.title}
+              initial={{ opacity: 0, y: 14 }}
+              animate={step >= i ? { opacity: 1, y: 0 } : { opacity: 0.1, y: 14 }}
+              transition={{ delay: i * 0.07 }}
+              className="flex items-start gap-3 p-3 lg:p-4 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm text-right"
             >
-              <div className="w-9 h-9 rounded-lg bg-brand-blue/10 flex items-center justify-center text-brand-blue shrink-0">
-                <LineChart size={18} />
+              <div className="w-10 h-10 rounded-xl bg-brand-blue/10 flex items-center justify-center text-brand-blue shrink-0">
+                <Icon size={20} strokeWidth={2.25} />
               </div>
-              <span className="text-sm lg:text-base font-black text-slate-700">{metric}</span>
+              <div className="min-w-0">
+                <p className="text-sm lg:text-base font-black text-brand-blue mb-0.5">{pillar.title}</p>
+                <p className="text-xs lg:text-sm font-semibold text-slate-600 leading-relaxed">{pillar.desc}</p>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const SlideFootfallCr = ({ step }: { step: number }) => {
+  const { title, footfall, cr, formula, insights } = CONTENT.slideFootfallCr;
+
+  return (
+    <div className="presentation-slide flex flex-col">
+      <SlideHeader title={title} />
+      <div className="flex-1 flex flex-col gap-3 lg:gap-4 justify-center min-h-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {[footfall, cr].map((item, i) => (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, y: 12 }}
+              animate={step >= i ? { opacity: 1, y: 0 } : { opacity: 0.1, y: 12 }}
+              className="p-4 lg:p-5 bg-white rounded-xl border border-slate-100 shadow-sm text-right"
+            >
+              <p className="text-xs font-black text-brand-blue uppercase tracking-wide mb-1">{item.label}</p>
+              <p className="text-sm lg:text-base font-bold text-slate-600">{item.text}</p>
             </motion.div>
           ))}
         </div>
 
-        {step >= 1 && (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 lg:gap-3">
-              {secondBatch.map((metric, i) => (
-                <motion.div
-                  key={metric}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.08 }}
-                  className="flex items-center gap-3 p-4 lg:p-5 bg-white rounded-xl border border-slate-100 shadow-sm text-right"
-                >
-                  <div className="w-9 h-9 rounded-lg bg-brand-blue/10 flex items-center justify-center text-brand-blue shrink-0">
-                    <BarChart3 size={18} />
-                  </div>
-                  <span className="text-sm lg:text-base font-black text-slate-700">{metric}</span>
-                </motion.div>
-              ))}
-            </div>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-sm lg:text-base font-semibold text-slate-500 text-right leading-relaxed pt-2 border-t border-slate-100"
-            >
-              {footer}
-            </motion.p>
-          </>
+        {step >= 2 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="p-4 lg:p-5 bg-brand-blue text-white rounded-xl text-center"
+          >
+            <p className="text-xs font-bold text-white/70 mb-1">معادلة التحويل</p>
+            <p className="text-lg lg:text-2xl font-black tracking-wide" dir="ltr">
+              {formula}
+            </p>
+          </motion.div>
         )}
+
+        {step >= 3 &&
+          insights.map((insight, i) => (
+            <motion.div
+              key={insight.title}
+              initial={{ opacity: 0, x: 16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="p-4 lg:p-5 bg-slate-50 rounded-xl border border-slate-100 text-right"
+            >
+              <p className="text-sm lg:text-base font-black text-brand-blue mb-1">{insight.title}</p>
+              <p className="text-xs lg:text-sm font-semibold text-slate-600">{insight.text}</p>
+            </motion.div>
+          ))}
       </div>
+    </div>
+  );
+};
+
+const SlideSalesEquation = ({ step }: { step: number }) => {
+  const { title, intro, factors, equation } = CONTENT.slideSalesEquation;
+
+  return (
+    <div className="presentation-slide flex flex-col">
+      <SlideHeader title={title} />
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-base lg:text-lg font-bold text-slate-600 mb-4 text-right"
+      >
+        {intro}
+      </motion.p>
+      <ul className="flex-1 space-y-2 list-none m-0 p-0">
+        {factors.map((factor, i) => (
+          <motion.li
+            key={factor}
+            initial={{ opacity: 0, x: 16 }}
+            animate={step >= i ? { opacity: 1, x: 0 } : { opacity: 0.1, x: 16 }}
+            className="flex items-center gap-3 p-3 lg:p-4 bg-white rounded-xl border border-slate-100 shadow-sm text-right"
+          >
+            <AlertCircle size={18} className="text-brand-orange shrink-0" />
+            <span className="text-sm lg:text-base font-bold text-slate-700">{factor}</span>
+          </motion.li>
+        ))}
+      </ul>
+      {step >= 4 && (
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-4 p-5 lg:p-6 bg-brand-blue text-white rounded-2xl text-right shadow-lg"
+        >
+          <p className="text-xs font-bold text-white/70 mb-2">المعادلة التشغيلية</p>
+          <p className="text-base lg:text-xl font-black leading-relaxed">{equation}</p>
+        </motion.div>
+      )}
+    </div>
+  );
+};
+
+const SlideProfessionalFraming = ({ step }: { step: number }) => {
+  const { title, blocks } = CONTENT.slideProfessionalFraming;
+
+  return (
+    <div className="presentation-slide flex flex-col justify-center">
+      <SlideHeader title={title} />
+      <div className="space-y-4 lg:space-y-6">
+        {blocks.map((block, i) => (
+          <motion.p
+            key={i}
+            initial={{ opacity: 0, y: 14 }}
+            animate={step >= i ? { opacity: 1, y: 0 } : { opacity: 0.15, y: 14 }}
+            transition={{ delay: i * 0.15 }}
+            className="text-base lg:text-xl font-semibold text-slate-600 leading-relaxed text-right p-5 lg:p-7 bg-white rounded-2xl border border-slate-100 shadow-sm"
+          >
+            {block}
+          </motion.p>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const MEASURE_ICONS: Record<MeasureKey, typeof ChefHat[]> = {
+  slideMeasureOps: [ChefHat, Clock, Activity, Gauge],
+  slideMeasureFootfall: [Users, Clock, TrendingUp, BarChart3],
+  slideMeasureConversion: [Monitor, Percent, Clock, AlertCircle],
+  slideMeasureBasket: [ShoppingCart, Package, TrendingUp, BarChart3],
+};
+
+const SlideMeasureLayer = ({
+  measureKey,
+  step,
+}: {
+  measureKey: MeasureKey;
+  step: number;
+}) => {
+  const data = CONTENT[measureKey];
+  const icons = MEASURE_ICONS[measureKey];
+  const showSubtitle = 'subtitle' in data && data.subtitle;
+
+  return (
+    <div className="presentation-slide flex flex-col">
+      <div className="shrink-0 text-right border-b-2 border-slate-100 pb-3 lg:pb-4 mb-4 lg:mb-6">
+        {showSubtitle && (
+          <p className="text-xs lg:text-sm font-bold text-brand-orange uppercase tracking-widest mb-1">
+            {data.subtitle}
+          </p>
+        )}
+        <div className="flex items-center justify-end gap-3">
+          <h2 className="text-2xl md:text-3xl lg:text-[2.75rem] font-black text-brand-blue leading-tight italic">
+            {data.title}
+          </h2>
+          <span className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-brand-blue text-white font-black text-lg flex items-center justify-center shrink-0">
+            {data.layer}
+          </span>
+        </div>
+        <div className="mt-2 h-1 w-16 lg:w-24 bg-brand-orange rounded-full mr-0 ml-auto" />
+      </div>
+
+      <ul className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2 lg:gap-3 list-none m-0 p-0 content-center">
+        {data.items.map((item, i) => {
+          const Icon = icons[i] ?? Activity;
+          return (
+            <motion.li
+              key={item}
+              initial={{ opacity: 0, y: 12 }}
+              animate={step >= i ? { opacity: 1, y: 0 } : { opacity: 0.1, y: 12 }}
+              transition={{ delay: i * 0.08 }}
+              className="flex items-center gap-3 p-4 lg:p-5 bg-white rounded-xl border border-slate-100 shadow-sm text-right"
+            >
+              <div className="w-9 h-9 rounded-lg bg-brand-blue/10 flex items-center justify-center text-brand-blue shrink-0">
+                <Icon size={18} strokeWidth={2.25} />
+              </div>
+              <span className="text-sm lg:text-base font-bold text-slate-700 leading-snug">{item}</span>
+            </motion.li>
+          );
+        })}
+      </ul>
     </div>
   );
 };
