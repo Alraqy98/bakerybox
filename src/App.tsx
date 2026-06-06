@@ -15,7 +15,8 @@ import {
   Clock,
   BarChart3,
   Percent,
-  AlertCircle,
+  UserCheck,
+  ListChecks,
 } from 'lucide-react';
 import { CONTENT } from './constants';
 
@@ -23,6 +24,8 @@ const SLIDES = [
   'hero',
   'slideThirtyDayGoal',
   'slideFivePillars',
+  'slideAuthoritiesFramework',
+  'slideOperationalCapacity',
   'slideFootfallCr',
   'slideSalesEquation',
   'slideProfessionalFraming',
@@ -134,6 +137,10 @@ function renderSlide(index: number) {
       return <SlideThirtyDayGoal />;
     case 'slideFivePillars':
       return <SlideFivePillars />;
+    case 'slideAuthoritiesFramework':
+      return <SlideAuthoritiesFramework />;
+    case 'slideOperationalCapacity':
+      return <SlideOperationalCapacity />;
     case 'slideFootfallCr':
       return <SlideFootfallCr />;
     case 'slideSalesEquation':
@@ -263,6 +270,68 @@ const SlideFivePillars = () => {
           );
         })}
       </div>
+    </div>
+  );
+};
+
+const AUTHORITY_ICONS = [UserCheck, ListChecks, Monitor];
+
+const SlideAuthoritiesFramework = () => {
+  const { title, points } = CONTENT.slideAuthoritiesFramework;
+
+  return (
+    <div className="presentation-slide flex flex-col justify-center">
+      <SlideHeader title={title} />
+      <ul className="flex-1 space-y-3 lg:space-y-4 list-none m-0 p-0">
+        {points.map((point, i) => {
+          const Icon = AUTHORITY_ICONS[i] ?? Activity;
+          return (
+            <li
+              key={point}
+              className="flex items-center gap-4 p-5 lg:p-6 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm text-right"
+            >
+              <div className="w-11 h-11 lg:w-12 lg:h-12 rounded-xl bg-brand-blue/10 flex items-center justify-center text-brand-blue shrink-0">
+                <Icon size={22} strokeWidth={2.25} />
+              </div>
+              <span className="text-base lg:text-xl font-bold text-slate-700 leading-snug">{point}</span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+const CAPACITY_ICONS = [Gauge, AlertCircle, TrendingUp];
+
+const SlideOperationalCapacity = () => {
+  const { title, subtitle, intro, points, conclusion } = CONTENT.slideOperationalCapacity;
+
+  return (
+    <div className="presentation-slide flex flex-col">
+      <SlideHeader title={title} subtitle={subtitle} />
+      <p className="text-sm lg:text-lg font-bold text-slate-600 mb-4 lg:mb-5 text-right leading-relaxed">
+        {intro}
+      </p>
+      <ul className="flex-1 space-y-2 lg:space-y-3 list-none m-0 p-0">
+        {points.map((point, i) => {
+          const Icon = CAPACITY_ICONS[i] ?? Activity;
+          return (
+            <li
+              key={point}
+              className="flex items-start gap-3 p-4 lg:p-5 bg-white rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm text-right"
+            >
+              <div className="w-10 h-10 rounded-xl bg-brand-blue/10 flex items-center justify-center text-brand-blue shrink-0 mt-0.5">
+                <Icon size={20} strokeWidth={2.25} />
+              </div>
+              <span className="text-sm lg:text-base font-bold text-slate-700 leading-relaxed">{point}</span>
+            </li>
+          );
+        })}
+      </ul>
+      <p className="mt-4 lg:mt-5 p-4 lg:p-5 rounded-xl bg-brand-blue/5 border border-brand-blue/10 text-sm lg:text-base font-semibold text-brand-blue text-right leading-relaxed">
+        {conclusion}
+      </p>
     </div>
   );
 };
