@@ -15,6 +15,7 @@ import {
   Clock,
   BarChart3,
   Percent,
+  AlertCircle,
   UserCheck,
   ListChecks,
 } from 'lucide-react';
